@@ -27,7 +27,9 @@ thiserror = "1"
 
 # optional dependencies
 bip32 = { version = "0.3", optional = true }
-tendermint-rpc = { version = "=0.23.7", optional = true, features = ["http-client"] }
+tendermint-rpc = { version = "=0.23.7", optional = true, features = [
+  "http-client",
+] }
 tokio = { version = "1", optional = true }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
@@ -37,10 +39,11 @@ getrandom = { version = "0.2", features = ["js"] }
 hex-literal = "0.3"
 
 [features]
-default = ["bip32"]
+default = ["bip32", "secret-cosmwasm"]
 dev = ["rpc", "tokio"]
 rpc = ["tendermint-rpc"]
 cosmwasm = ["cosmos-sdk-proto/cosmwasm"]
+secret-cosmwasm = ["cosmwasm"]
 
 [package.metadata.docs.rs]
 all-features = true

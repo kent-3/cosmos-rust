@@ -29,6 +29,9 @@ pub mod vesting;
 #[cfg(feature = "cosmwasm")]
 pub mod cosmwasm;
 
+#[cfg(feature = "secret-cosmwasm")]
+pub mod secret_cosmwasm;
+
 #[cfg(feature = "dev")]
 #[cfg_attr(docsrs, doc(cfg(feature = "dev")))]
 pub mod dev;
