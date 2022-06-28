@@ -57,6 +57,4 @@ pub use tendermint;
 #[cfg_attr(docsrs, doc(cfg(feature = "bip32")))]
 pub use bip32;
 
-#[cfg(feature = "rpc")]
-#[cfg_attr(docsrs, doc(cfg(feature = "rpc")))]
 pub use tendermint_rpc as rpc;

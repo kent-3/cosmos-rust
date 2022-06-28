@@ -22,12 +22,14 @@ rand_core = { version = "0.6", features = ["std"] }
 serde = { version = "1", features = ["serde_derive"] }
 serde_json = "1"
 subtle-encoding = { version = "0.5", features = ["bech32-preview"] }
-tendermint = { version = "=0.23.7", features = ["secp256k1"] }
+tendermint = { git = "https://github.com/informalsystems/tendermint-rs", features = [
+  "secp256k1",
+] }
 thiserror = "1"
 
 # optional dependencies
 bip32 = { version = "0.4", optional = true }
-tendermint-rpc = { version = "=0.23.7", optional = true, features = [
+tendermint-rpc = { git = "https://github.com/informalsystems/tendermint-rs", features = [
   "http-client",
 ] }
 tokio = { version = "1", optional = true }
@@ -40,8 +42,7 @@ hex-literal = "0.3"
 
 [features]
 default = ["bip32", "secret-cosmwasm"]
-dev = ["rpc", "tokio"]
-rpc = ["tendermint-rpc"]
+dev = ["tokio"]
 cosmwasm = ["cosmos-sdk-proto/cosmwasm"]
 secret-cosmwasm = ["cosmwasm"]
 

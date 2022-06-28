@@ -1,10 +1,10 @@
 //! Abci-related functionality
 
+use crate::rpc::abci::Gas;
 use crate::tx::Msg;
 use crate::{proto, ErrorReport, Result};
 use prost::Message;
 use serde::{Deserialize, Serialize};
-use tendermint::abci::Gas;
 
 /// MsgData defines the data returned in a Result object during message execution.
 #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -59,11 +59,11 @@ pub struct TxMsgData {
     pub data: Vec<MsgData>,
 }
 
-impl TryFrom<tendermint::abci::Data> for TxMsgData {
+impl TryFrom<crate::rpc::abci::Data> for TxMsgData {
     type Error = ErrorReport;
 
-    fn try_from(data: tendermint::abci::Data) -> Result<TxMsgData> {
-        let proto = proto::cosmos::base::abci::v1beta1::TxMsgData::decode(data.value().as_ref())?;
+    fn try_from(data: crate::rpc::abci::Data) -> Result<TxMsgData> {
+        let proto = proto::cosmos::base::abci::v1beta1::TxMsgData::decode(data.as_bytes())?;
         proto.try_into()
     }
 }

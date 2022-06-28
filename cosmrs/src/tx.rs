@@ -123,12 +123,11 @@ pub use self::{
     signer_info::{SignerInfo, SignerPublicKey},
 };
 pub use crate::{proto::cosmos::tx::signing::v1beta1::SignMode, ErrorReport};
-pub use tendermint::abci::{transaction::Hash, Gas};
+pub use crate::rpc::abci::{transaction::Hash, Gas};
 
 use crate::{proto, Error, Result};
 use prost::Message;
 
-#[cfg(feature = "rpc")]
 use crate::rpc;
 
 /// Account number.
@@ -165,8 +164,6 @@ impl Tx {
     }
 
     /// Use RPC to find a transaction by its hash.
-    #[cfg(feature = "rpc")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "rpc")))]
     pub async fn find_by_hash<C>(rpc_client: &C, tx_hash: Hash) -> Result<Tx>
     where
         C: rpc::Client + Send + Sync,
