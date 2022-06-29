@@ -1,7 +1,7 @@
 use crate::{
     proto,
     tx::{Msg, MsgProto},
-    AccountId, ErrorReport, Result,
+    AccountId, Coin, ErrorReport, Result,
 };
 use proto::cosmwasm::secret::compute::v1beta1 as cosmwasm_proto;
 
@@ -106,8 +106,8 @@ impl From<MsgInstantiateContract> for cosmwasm_proto::MsgInstantiateContract {
     }
 }
 
-/// MsgExecuteContract execute a contract handle function
 #[derive(Debug, Clone)]
+/// MsgExecuteContract execute a contract handle function
 pub struct MsgExecuteContract {
     /// Sender is the that actor that signed the messages
     pub sender: AccountId,
@@ -115,6 +115,8 @@ pub struct MsgExecuteContract {
     pub contract: AccountId,
     /// The message to pass to the contract handle method
     pub msg: Vec<u8>,
+    /// Native amounts of coins to send with this message
+    pub sent_funds: Vec<Coin>,
 }
 
 impl MsgProto for cosmwasm_proto::MsgExecuteContract {
@@ -133,6 +135,11 @@ impl TryFrom<cosmwasm_proto::MsgExecuteContract> for MsgExecuteContract {
             sender: AccountId::new("secret", &proto.sender)?,
             contract: AccountId::new("secret", &proto.contract)?,
             msg: proto.msg,
+            sent_funds: proto
+                .sent_funds
+                .into_iter()
+                .map(|c| c.try_into())
+                .collect::<Result<_>>()?,
         })
     }
 }
@@ -144,7 +151,7 @@ impl From<MsgExecuteContract> for cosmwasm_proto::MsgExecuteContract {
             contract: msg.contract.to_bytes(),
             msg: msg.msg,
             callback_code_hash: "".to_string(),
-            sent_funds: vec![],
+            sent_funds: msg.sent_funds.into_iter().map(|c| c.into()).collect(),
             callback_sig: vec![],
         }
     }
