@@ -1,34 +1,33 @@
 /// MsgRegisterAccount registers an interchain account for the given owner over the specified connection pair
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgRegisterAccount {
-    #[prost(string, tag="1")]
+    #[prost(string, tag = "1")]
     pub owner: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
+    #[prost(string, tag = "2")]
     pub connection_id: ::prost::alloc::string::String,
 }
 /// MsgRegisterAccountResponse is the response type for Msg/RegisterAccount
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgRegisterAccountResponse {
-}
+pub struct MsgRegisterAccountResponse {}
 /// MsgSubmitTx creates and submits an arbitrary transaction msg to be executed using an interchain account
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgSubmitTx {
-    #[prost(bytes="vec", tag="1")]
+    #[prost(bytes = "vec", tag = "1")]
     pub owner: ::prost::alloc::vec::Vec<u8>,
-    #[prost(string, tag="2")]
+    #[prost(string, tag = "2")]
     pub connection_id: ::prost::alloc::string::String,
-    #[prost(message, optional, tag="4")]
+    #[prost(message, optional, tag = "4")]
     pub msg: ::core::option::Option<::prost_types::Any>,
 }
 /// MsgSubmitTxResponse defines the MsgSubmitTx response type
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgSubmitTxResponse {
-}
+pub struct MsgSubmitTxResponse {}
 /// Generated client implementations.
 #[cfg(feature = "grpc")]
 #[cfg_attr(docsrs, doc(cfg(feature = "grpc")))]
 pub mod msg_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
+    use tonic::codegen::http::Uri;
     use tonic::codegen::*;
     /// Msg defines the ica-authentication Msg service.
     #[derive(Debug, Clone)]
@@ -59,10 +58,11 @@ pub mod msg_client {
             let inner = tonic::client::Grpc::new(inner);
             Self { inner }
         }
-        pub fn with_interceptor<F>(
-            inner: T,
-            interceptor: F,
-        ) -> MsgClient<InterceptedService<T, F>>
+        pub fn with_origin(inner: T, origin: Uri) -> Self {
+            let inner = tonic::client::Grpc::with_origin(inner, origin);
+            Self { inner }
+        }
+        pub fn with_interceptor<F>(inner: T, interceptor: F) -> MsgClient<InterceptedService<T, F>>
         where
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
@@ -72,25 +72,24 @@ pub mod msg_client {
                     <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
                 >,
             >,
-            <T as tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
-            >>::Error: Into<StdError> + Send + Sync,
+            <T as tonic::codegen::Service<http::Request<tonic::body::BoxBody>>>::Error:
+                Into<StdError> + Send + Sync,
         {
             MsgClient::new(InterceptedService::new(inner, interceptor))
         }
-        /// Compress requests with `gzip`.
+        /// Compress requests with the given encoding.
         ///
         /// This requires the server to support it otherwise it might respond with an
         /// error.
         #[must_use]
-        pub fn send_gzip(mut self) -> Self {
-            self.inner = self.inner.send_gzip();
+        pub fn send_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.inner = self.inner.send_compressed(encoding);
             self
         }
-        /// Enable decompressing responses with `gzip`.
+        /// Enable decompressing responses.
         #[must_use]
-        pub fn accept_gzip(mut self) -> Self {
-            self.inner = self.inner.accept_gzip();
+        pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.inner = self.inner.accept_compressed(encoding);
             self
         }
         /// Register defines a rpc handler for MsgRegisterAccount
@@ -98,38 +97,29 @@ pub mod msg_client {
             &mut self,
             request: impl tonic::IntoRequest<super::MsgRegisterAccount>,
         ) -> Result<tonic::Response<super::MsgRegisterAccountResponse>, tonic::Status> {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::new(
-                        tonic::Code::Unknown,
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    format!("Service was not ready: {}", e.into()),
+                )
+            })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/secret.intertx.v1beta1.Msg/RegisterAccount",
-            );
+            let path =
+                http::uri::PathAndQuery::from_static("/secret.intertx.v1beta1.Msg/RegisterAccount");
             self.inner.unary(request.into_request(), path, codec).await
         }
         pub async fn submit_tx(
             &mut self,
             request: impl tonic::IntoRequest<super::MsgSubmitTx>,
         ) -> Result<tonic::Response<super::MsgSubmitTxResponse>, tonic::Status> {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::new(
-                        tonic::Code::Unknown,
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    format!("Service was not ready: {}", e.into()),
+                )
+            })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/secret.intertx.v1beta1.Msg/SubmitTx",
-            );
+            let path = http::uri::PathAndQuery::from_static("/secret.intertx.v1beta1.Msg/SubmitTx");
             self.inner.unary(request.into_request(), path, codec).await
         }
     }
@@ -137,15 +127,15 @@ pub mod msg_client {
 /// QueryInterchainAccountFromAddressRequest is the request type for the Query/InterchainAccountAddress RPC
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryInterchainAccountFromAddressRequest {
-    #[prost(string, tag="1")]
+    #[prost(string, tag = "1")]
     pub owner: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
+    #[prost(string, tag = "2")]
     pub connection_id: ::prost::alloc::string::String,
 }
 /// QueryInterchainAccountFromAddressResponse the response type for the Query/InterchainAccountAddress RPC
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryInterchainAccountFromAddressResponse {
-    #[prost(string, tag="1")]
+    #[prost(string, tag = "1")]
     pub interchain_account_address: ::prost::alloc::string::String,
 }
 /// Generated client implementations.
@@ -153,6 +143,7 @@ pub struct QueryInterchainAccountFromAddressResponse {
 #[cfg_attr(docsrs, doc(cfg(feature = "grpc")))]
 pub mod query_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
+    use tonic::codegen::http::Uri;
     use tonic::codegen::*;
     /// Query defines the gRPC querier service.
     #[derive(Debug, Clone)]
@@ -183,6 +174,10 @@ pub mod query_client {
             let inner = tonic::client::Grpc::new(inner);
             Self { inner }
         }
+        pub fn with_origin(inner: T, origin: Uri) -> Self {
+            let inner = tonic::client::Grpc::with_origin(inner, origin);
+            Self { inner }
+        }
         pub fn with_interceptor<F>(
             inner: T,
             interceptor: F,
@@ -196,46 +191,38 @@ pub mod query_client {
                     <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
                 >,
             >,
-            <T as tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
-            >>::Error: Into<StdError> + Send + Sync,
+            <T as tonic::codegen::Service<http::Request<tonic::body::BoxBody>>>::Error:
+                Into<StdError> + Send + Sync,
         {
             QueryClient::new(InterceptedService::new(inner, interceptor))
         }
-        /// Compress requests with `gzip`.
+        /// Compress requests with the given encoding.
         ///
         /// This requires the server to support it otherwise it might respond with an
         /// error.
         #[must_use]
-        pub fn send_gzip(mut self) -> Self {
-            self.inner = self.inner.send_gzip();
+        pub fn send_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.inner = self.inner.send_compressed(encoding);
             self
         }
-        /// Enable decompressing responses with `gzip`.
+        /// Enable decompressing responses.
         #[must_use]
-        pub fn accept_gzip(mut self) -> Self {
-            self.inner = self.inner.accept_gzip();
+        pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.inner = self.inner.accept_compressed(encoding);
             self
         }
         /// QueryInterchainAccountFromAddress returns the interchain account for given owner address on a given connection pair
         pub async fn interchain_account_from_address(
             &mut self,
-            request: impl tonic::IntoRequest<
-                super::QueryInterchainAccountFromAddressRequest,
-            >,
-        ) -> Result<
-            tonic::Response<super::QueryInterchainAccountFromAddressResponse>,
-            tonic::Status,
-        > {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::new(
-                        tonic::Code::Unknown,
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
+            request: impl tonic::IntoRequest<super::QueryInterchainAccountFromAddressRequest>,
+        ) -> Result<tonic::Response<super::QueryInterchainAccountFromAddressResponse>, tonic::Status>
+        {
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    format!("Service was not ready: {}", e.into()),
+                )
+            })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/secret.intertx.v1beta1.Query/InterchainAccountFromAddress",

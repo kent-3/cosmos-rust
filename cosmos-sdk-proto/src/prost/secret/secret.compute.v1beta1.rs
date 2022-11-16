@@ -1,5 +1,3 @@
-//import "x/compute/internal/types/types.proto";
-
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgStoreCode {
     #[prost(bytes = "vec", tag = "1")]
@@ -13,7 +11,7 @@ pub struct MsgStoreCode {
     /// Builder is a valid docker image name with tag, optional
     ///
     /// InstantiatePermission to apply on contract creation, optional
-    ///  AccessConfig InstantiatePermission = 5;
+    ///   AccessConfig InstantiatePermission = 5;
     #[prost(string, tag = "4")]
     pub builder: ::prost::alloc::string::String,
 }
@@ -22,7 +20,7 @@ pub struct MsgInstantiateContract {
     #[prost(bytes = "vec", tag = "1")]
     pub sender: ::prost::alloc::vec::Vec<u8>,
     /// Admin is an optional address that can execute migrations
-    ///  bytes admin = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"];
+    ///   bytes admin = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"];
     #[prost(string, tag = "2")]
     pub callback_code_hash: ::prost::alloc::string::String,
     #[prost(uint64, tag = "3")]
@@ -56,21 +54,6 @@ pub struct AccessTypeParam {
     #[prost(enumeration = "AccessType", tag = "1")]
     pub value: i32,
 }
-//
-//message AccessConfig {
-//option (gogoproto.goproto_stringer) = true;
-//AccessType permission = 1 [(gogoproto.moretags) = "yaml:\"permission\""];
-//bytes address = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress", (gogoproto.moretags) = "yaml:\"address\""];
-//}
-
-//
-//// Params defines the set of wasm parameters.
-//message Params {
-//option (gogoproto.goproto_stringer) = false;
-//AccessConfig code_upload_access = 1 [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"code_upload_access\""];
-//AccessType instantiate_default_permission = 2 [(gogoproto.moretags) = "yaml:\"instantiate_default_permission\""];
-//}
-
 /// CodeInfo is data for the uploaded contract WASM code
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CodeInfo {
@@ -80,7 +63,7 @@ pub struct CodeInfo {
     pub creator: ::prost::alloc::vec::Vec<u8>,
     #[prost(string, tag = "3")]
     pub source: ::prost::alloc::string::String,
-    ///    AccessConfig instantiate_config = 5 [(gogoproto.nullable) = false];
+    ///     AccessConfig instantiate_config = 5 [(gogoproto.nullable) = false];
     #[prost(string, tag = "4")]
     pub builder: ::prost::alloc::string::String,
 }
@@ -98,43 +81,19 @@ pub struct ContractInfo {
     pub code_id: u64,
     #[prost(bytes = "vec", tag = "2")]
     pub creator: ::prost::alloc::vec::Vec<u8>,
-    ///    bytes admin = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"];
+    ///     bytes admin = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"];
     #[prost(string, tag = "4")]
     pub label: ::prost::alloc::string::String,
     /// never show this in query results, just use for sorting
     /// (Note: when using json tag "-" amino refused to serialize it...)
     ///
-    ///    bytes init_msg = 5 [(gogoproto.casttype) = "encoding/json.RawMessage"];
+    ///     bytes init_msg = 5 [(gogoproto.casttype) = "encoding/json.RawMessage"];
     ///
-    ///    AbsoluteTxPosition last_updated = 7;
-    ///    uint64 previous_code_id = 8 [(gogoproto.customname) = "PreviousCodeID"];
+    ///     AbsoluteTxPosition last_updated = 7;
+    ///     uint64 previous_code_id = 8 [(gogoproto.customname) = "PreviousCodeID"];
     #[prost(message, optional, tag = "5")]
     pub created: ::core::option::Option<AbsoluteTxPosition>,
 }
-//
-//enum ContractCodeHistoryOperationType {
-//option (gogoproto.goproto_enum_prefix) = false;
-//Undefined = 0;
-//Init = 1 [(gogoproto.enumvalue_customname) = "ContractCodeHistoryTypeInit"];
-//Migrate = 2 [(gogoproto.enumvalue_customname) = "ContractCodeHistoryTypeMigrate"];
-//Genesis = 3 [(gogoproto.enumvalue_customname) = "ContractCodeHistoryTypeGenesis"];
-//}
-
-//
-//message ContractHistory {
-//repeated ContractCodeHistoryEntry code_history_entries = 1 [(gogoproto.nullable) = false];
-//}
-
-//
-//// ContractCodeHistoryEntry stores code updates to a contract.
-//message ContractCodeHistoryEntry {
-//ContractCodeHistoryOperationType operation = 1;
-//uint64 code_id = 2 [(gogoproto.customname) = "CodeID"];
-//AbsoluteTxPosition updated = 3;
-//bytes msg = 4 [(gogoproto.casttype) = "encoding/json.RawMessage"];
-//
-//}
-
 /// AbsoluteTxPosition can be used to sort contracts
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AbsoluteTxPosition {
@@ -163,10 +122,24 @@ pub enum AccessType {
     OnlyAddress = 2,
     Everybody = 3,
 }
+impl AccessType {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            AccessType::Undefined => "UNDEFINED",
+            AccessType::Nobody => "NOBODY",
+            AccessType::OnlyAddress => "ONLY_ADDRESS",
+            AccessType::Everybody => "EVERYBODY",
+        }
+    }
+}
 /// GenesisState - genesis state of x/wasm
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GenesisState {
-    ///    Params params = 1 [(gogoproto.nullable) = false];
+    ///     Params params = 1 [(gogoproto.nullable) = false];
     #[prost(message, repeated, tag = "2")]
     pub codes: ::prost::alloc::vec::Vec<Code>,
     #[prost(message, repeated, tag = "3")]
@@ -226,11 +199,6 @@ pub struct QueryContractHistoryRequest {
     #[prost(bytes = "vec", tag = "1")]
     pub address: ::prost::alloc::vec::Vec<u8>,
 }
-//
-//message QueryContractHistoryResponse {
-//repeated ContractCodeHistoryEntry entries = 1 [(gogoproto.nullable) = false];
-//}
-
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryContractsByCodeRequest {
     /// grpc-gateway_out does not support Go style CodID
@@ -250,31 +218,11 @@ pub struct QueryContractsByCodeResponse {
     #[prost(message, repeated, tag = "1")]
     pub contract_infos: ::prost::alloc::vec::Vec<ContractInfoWithAddress>,
 }
-//
-//message QueryAllContractStateRequest {
-//// address is the address of the contract
-//bytes address = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"];
-//}
-//
-//message QueryAllContractStateResponse {
-//repeated Model models = 1 [(gogoproto.nullable) = false];
-//}
-//
-//message QueryRawContractStateRequest {
-//// address is the address of the contract
-//bytes address = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"];
-//bytes query_data = 2;
-//}
-//
-//message QueryRawContractStateResponse {
-//bytes data = 1;
-//}
-
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QuerySmartContractStateRequest {
     /// address is the address of the contract
-    #[prost(string, tag = "1")]
-    pub address: ::prost::alloc::string::String,
+    #[prost(bytes = "vec", tag = "1")]
+    pub address: ::prost::alloc::vec::Vec<u8>,
     #[prost(bytes = "vec", tag = "2")]
     pub query_data: ::prost::alloc::vec::Vec<u8>,
 }
@@ -372,6 +320,7 @@ pub struct DecryptedAnswer {
 #[cfg_attr(docsrs, doc(cfg(feature = "grpc")))]
 pub mod query_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
+    use tonic::codegen::http::Uri;
     use tonic::codegen::*;
     /// Query provides defines the gRPC querier service
     #[derive(Debug, Clone)]
@@ -402,6 +351,10 @@ pub mod query_client {
             let inner = tonic::client::Grpc::new(inner);
             Self { inner }
         }
+        pub fn with_origin(inner: T, origin: Uri) -> Self {
+            let inner = tonic::client::Grpc::with_origin(inner, origin);
+            Self { inner }
+        }
         pub fn with_interceptor<F>(
             inner: T,
             interceptor: F,
@@ -420,19 +373,19 @@ pub mod query_client {
         {
             QueryClient::new(InterceptedService::new(inner, interceptor))
         }
-        /// Compress requests with `gzip`.
+        /// Compress requests with the given encoding.
         ///
         /// This requires the server to support it otherwise it might respond with an
         /// error.
         #[must_use]
-        pub fn send_gzip(mut self) -> Self {
-            self.inner = self.inner.send_gzip();
+        pub fn send_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.inner = self.inner.send_compressed(encoding);
             self
         }
-        /// Enable decompressing responses with `gzip`.
+        /// Enable decompressing responses.
         #[must_use]
-        pub fn accept_gzip(mut self) -> Self {
-            self.inner = self.inner.accept_gzip();
+        pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
+            self.inner = self.inner.accept_compressed(encoding);
             self
         }
         /// Query contract
