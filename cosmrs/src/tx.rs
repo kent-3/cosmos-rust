@@ -47,7 +47,7 @@
 //! // We'll be doing a simple send transaction.
 //! // First we'll create a "Coin" amount to be sent, in this case 1 million uatoms.
 //! let amount = Coin {
-//!     amount: 1_000_000u64.into(),
+//!     amount: 1_000_000u128,
 //!     denom: "uatom".parse()?,
 //! };
 //!
@@ -63,7 +63,7 @@
 //! let chain_id = "cosmoshub-4".parse()?;
 //! let account_number = 1;
 //! let sequence_number = 0;
-//! let gas = 100_000;
+//! let gas = 100_000u64;
 //! let timeout_height = 9001u16;
 //! let memo = "example memo";
 //!
@@ -106,6 +106,7 @@ pub mod mode_info;
 
 mod auth_info;
 mod body;
+mod builder;
 mod fee;
 mod msg;
 mod raw;
@@ -115,20 +116,26 @@ mod signer_info;
 pub use self::{
     auth_info::AuthInfo,
     body::Body,
+    builder::BodyBuilder,
     fee::Fee,
     mode_info::ModeInfo,
-    msg::{Msg, MsgProto},
+    msg::Msg,
     raw::Raw,
     sign_doc::SignDoc,
     signer_info::{SignerInfo, SignerPublicKey},
 };
-pub use crate::{proto::cosmos::tx::signing::v1beta1::SignMode, ErrorReport};
-pub use crate::rpc::abci::{transaction::Hash, Gas};
+pub use crate::{
+    proto::{cosmos::tx::signing::v1beta1::SignMode, traits::MessageExt},
+    ErrorReport,
+};
 
-use crate::{proto, Error, Result};
-use prost::Message;
+use crate::{
+    proto::{self, traits::Message},
+    Error, Gas, Result,
+};
 
-use crate::rpc;
+#[cfg(feature = "rpc")]
+use {crate::rpc, tendermint::Hash};
 
 /// Account number.
 pub type AccountNumber = u64;
@@ -168,6 +175,12 @@ impl Tx {
     where
         C: rpc::Client + Send + Sync,
     {
+        // TODO(tarcieri): better conversion or unified `Hash` type, see tendermint-rs#1221
+        let tx_hash = match tx_hash {
+            Hash::Sha256(bytes) => tendermint_rpc::abci::transaction::Hash::new(bytes),
+            _ => return Err(Error::Crypto.into()),
+        };
+
         let response = rpc_client.tx(tx_hash, false).await?;
         Tx::from_bytes(response.tx.as_bytes())
     }
