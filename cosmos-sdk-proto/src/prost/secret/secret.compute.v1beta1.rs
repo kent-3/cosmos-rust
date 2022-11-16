@@ -221,8 +221,8 @@ pub struct QueryContractsByCodeResponse {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QuerySmartContractStateRequest {
     /// address is the address of the contract
-    #[prost(bytes = "vec", tag = "1")]
-    pub address: ::prost::alloc::vec::Vec<u8>,
+    #[prost(string, tag = "1")]
+    pub address: ::prost::alloc::string::String,
     #[prost(bytes = "vec", tag = "2")]
     pub query_data: ::prost::alloc::vec::Vec<u8>,
 }

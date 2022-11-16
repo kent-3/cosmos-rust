@@ -1,8 +1,4 @@
-use crate::{
-    proto,
-    tx::{Msg, MsgProto},
-    AccountId, Coin, ErrorReport, Result,
-};
+use crate::{proto, tx::Msg, AccountId, Coin, ErrorReport, Result};
 use proto::cosmwasm::secret::compute::v1beta1 as cosmwasm_proto;
 
 #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -16,10 +12,6 @@ pub struct MsgStoreCode {
     pub source: Option<String>,
     /// Builder is a valid docker image name with tag, optional
     pub builder: Option<String>,
-}
-
-impl MsgProto for cosmwasm_proto::MsgStoreCode {
-    const TYPE_URL: &'static str = "/secret.compute.v1beta1.MsgStoreCode";
 }
 
 impl Msg for MsgStoreCode {
@@ -71,10 +63,6 @@ pub struct MsgInstantiateContract {
     pub init_msg: Vec<u8>,
 }
 
-impl MsgProto for cosmwasm_proto::MsgInstantiateContract {
-    const TYPE_URL: &'static str = "/secret.compute.v1beta1.MsgInstantiateContract";
-}
-
 impl Msg for MsgInstantiateContract {
     type Proto = cosmwasm_proto::MsgInstantiateContract;
 }
@@ -117,10 +105,6 @@ pub struct MsgExecuteContract {
     pub msg: Vec<u8>,
     /// Native amounts of coins to send with this message
     pub sent_funds: Vec<Coin>,
-}
-
-impl MsgProto for cosmwasm_proto::MsgExecuteContract {
-    const TYPE_URL: &'static str = "/secret.compute.v1beta1.MsgExecuteContract";
 }
 
 impl Msg for MsgExecuteContract {

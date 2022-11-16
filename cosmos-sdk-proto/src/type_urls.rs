@@ -141,6 +141,21 @@ impl TypeUrl for cosmwasm::wasm::v1::MsgClearAdminResponse {
     const TYPE_URL: &'static str = "/cosmwasm.wasm.v1.MsgClearAdminResponse";
 }
 
+#[cfg(feature = "secret-cosmwasm")]
+impl TypeUrl for cosmwasm::secret::compute::v1beta1::MsgStoreCode {
+    const TYPE_URL: &'static str = "/secret.compute.v1beta1.MsgStoreCode";
+}
+
+#[cfg(feature = "secret-cosmwasm")]
+impl TypeUrl for cosmwasm::secret::compute::v1beta1::MsgInstantiateContract {
+    const TYPE_URL: &'static str = "/secret.compute.v1beta1.MsgInstantiateContract";
+}
+
+#[cfg(feature = "secret-cosmwasm")]
+impl TypeUrl for cosmwasm::secret::compute::v1beta1::MsgExecuteContract {
+    const TYPE_URL: &'static str = "/secret.compute.v1beta1.MsgExecuteContract";
+}
+
 impl TypeUrl for ibc::applications::transfer::v1::MsgTransfer {
     const TYPE_URL: &'static str = "/ibc.applications.transfer.v1.MsgTransfer";
 }
