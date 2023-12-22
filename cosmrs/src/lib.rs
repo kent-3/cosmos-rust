@@ -40,6 +40,10 @@ pub mod vesting;
 #[cfg(feature = "cosmwasm")]
 pub mod cosmwasm;
 
+#[cfg(feature = "secret-cosmwasm")]
+#[allow(missing_docs)]
+pub mod secret_cosmwasm;
+
 #[cfg(feature = "dev")]
 pub mod dev;
 

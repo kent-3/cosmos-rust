@@ -8,11 +8,9 @@ use crate::{
     Result,
 };
 
-#[cfg(feature = "rpc")]
 use crate::rpc;
 
 /// Response from `/broadcast_tx_commit`
-#[cfg(feature = "rpc")]
 pub type TxCommitResponse = rpc::endpoint::broadcast::tx_commit::Response;
 
 /// Raw transaction

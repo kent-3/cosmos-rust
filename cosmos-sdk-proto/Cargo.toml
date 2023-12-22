@@ -2,9 +2,9 @@
 name = "cosmos-sdk-proto"
 version = "0.20.0"
 authors = [
-    "Justin Kilpatrick <justin@althea.net>",
-    "Greg Szabo <greg@informal.systems>",
-    "Tony Arcieri <tony@iqlusion.io>"
+  "Justin Kilpatrick <justin@althea.net>",
+  "Greg Szabo <greg@informal.systems>",
+  "Tony Arcieri <tony@iqlusion.io>",
 ]
 license = "Apache-2.0"
 repository = "https://github.com/cosmos/cosmos-rust/tree/main/cosmos-sdk-proto"
@@ -28,6 +28,7 @@ default = ["grpc-transport"]
 grpc = ["tonic"]
 grpc-transport = ["grpc", "tonic/transport"]
 cosmwasm = []
+secret-cosmwasm = ["cosmwasm"]
 
 [package.metadata.docs.rs]
 all-features = true

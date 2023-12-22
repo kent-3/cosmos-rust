@@ -39,7 +39,7 @@ dev       = ["rpc", "tokio"]
 getrandom = ["rand_core/getrandom"]
 grpc      = ["cosmos-sdk-proto/grpc-transport", "grpc-core"]
 grpc-core = ["cosmos-sdk-proto/grpc"]
-rpc       = ["tendermint-rpc"]
+rpc = ["tendermint-rpc"]
 
 [package.metadata.docs.rs]
 all-features = true

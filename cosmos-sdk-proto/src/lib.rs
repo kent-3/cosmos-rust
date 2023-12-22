@@ -237,6 +237,24 @@ pub mod cosmwasm {
             include!("prost/wasmd/cosmwasm.wasm.v1.rs");
         }
     }
+
+    #[cfg(feature = "secret-cosmwasm")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "secret-cosmwasm")))]
+    pub mod secret {
+        pub mod compute {
+            pub mod v1beta1 {
+                include!("prost/secret/secret.compute.v1beta1.rs");
+            }
+        }
+
+        #[cfg(feature = "secret-cosmwasm")]
+        #[cfg_attr(docsrs, doc(cfg(feature = "secret-cosmwasm")))]
+        pub mod registration {
+            pub mod v1beta1 {
+                include!("prost/secret/secret.registration.v1beta1.rs");
+            }
+        }
+    }
 }
 
 /// IBC protobuf definitions.

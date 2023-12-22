@@ -28,6 +28,9 @@ const IBC_REV: &str = "v3.0.0";
 /// The wasmd commit or tag to be cloned and used to build the proto files
 const WASMD_REV: &str = "v0.29.2";
 
+/// The secret network commit or tag to be cloned and used to build the proto files
+const SECRET_REV: &str = "v1.3.1";
+
 // All paths must end with a / and either be absolute or include a ./ to reference the current
 // working directory.
 
@@ -39,6 +42,8 @@ const COSMOS_SDK_DIR: &str = "../cosmos-sdk-go";
 const IBC_DIR: &str = "../ibc-go";
 /// Directory where the submodule is located
 const WASMD_DIR: &str = "../wasmd";
+/// Directory where the submodule is located
+const SECRET_DIR: &str = "../secret-network";
 /// A temporary directory for proto building
 const TMP_BUILD_DIR: &str = "/tmp/tmp-protobuf/";
 
@@ -76,22 +81,27 @@ fn main() {
     let temp_sdk_dir = tmp_build_dir.join("cosmos-sdk");
     let temp_ibc_dir = tmp_build_dir.join("ibc-go");
     let temp_wasmd_dir = tmp_build_dir.join("wasmd");
+    let temp_secret_dir = tmp_build_dir.join("secret");
 
     fs::create_dir_all(&temp_sdk_dir).unwrap();
     fs::create_dir_all(&temp_ibc_dir).unwrap();
     fs::create_dir_all(&temp_wasmd_dir).unwrap();
+    fs::create_dir_all(&temp_secret_dir).unwrap();
 
     update_submodules();
     output_sdk_version(&temp_sdk_dir);
     output_ibc_version(&temp_ibc_dir);
     output_wasmd_version(&temp_wasmd_dir);
+    output_secret_version(&temp_secret_dir);
     compile_sdk_protos_and_services(&temp_sdk_dir);
     compile_ibc_protos_and_services(&temp_ibc_dir);
     compile_wasmd_proto_and_services(&temp_wasmd_dir);
+    compile_secret_proto_and_services(&temp_secret_dir);
 
     copy_generated_files(&temp_sdk_dir, &proto_dir.join("cosmos-sdk"));
     copy_generated_files(&temp_ibc_dir, &proto_dir.join("ibc-go"));
     copy_generated_files(&temp_wasmd_dir, &proto_dir.join("wasmd"));
+    copy_generated_files(&temp_secret_dir, &proto_dir.join("secret"));
 
     apply_patches(&proto_dir);
 
@@ -196,9 +206,14 @@ fn update_submodules() {
     run_git(["-C", IBC_DIR, "reset", "--hard", IBC_REV]);
 
     info!("Updating wasmd submodule...");
-    run_git(["submodule", "update", "--init"]);
-    run_git(["-C", WASMD_DIR, "fetch"]);
-    run_git(["-C", WASMD_DIR, "reset", "--hard", WASMD_REV]);
+    run_git(&["submodule", "update", "--init"]);
+    run_git(&["-C", WASMD_DIR, "fetch"]);
+    run_git(&["-C", WASMD_DIR, "reset", "--hard", WASMD_REV]);
+
+    // info!("Updating secret-nework submodule...");
+    // run_git(&["submodule", "update", "--init"]);
+    // run_git(&["-C", SECRET_DIR, "fetch"]);
+    // run_git(&["-C", SECRET_DIR, "reset", "--hard", SECRET_REV]);
 }
 
 fn output_sdk_version(out_dir: &Path) {
@@ -214,6 +229,11 @@ fn output_ibc_version(out_dir: &Path) {
 fn output_wasmd_version(out_dir: &Path) {
     let path = out_dir.join("WASMD_COMMIT");
     fs::write(path, WASMD_REV).unwrap();
+}
+
+fn output_secret_version(out_dir: &Path) {
+    let path = out_dir.join("SECRET_COMMIT");
+    fs::write(path, SECRET_REV).unwrap();
 }
 
 fn compile_sdk_protos_and_services(out_dir: &Path) {
@@ -289,6 +309,47 @@ fn compile_ibc_protos_and_services(out_dir: &Path) {
         .build_server(false)
         .out_dir(out_dir)
         .extern_path(".tendermint", "::tendermint_proto")
+        .compile(&protos, &includes)
+        .unwrap();
+
+    info!("=> Done!");
+}
+
+fn compile_secret_proto_and_services(out_dir: &Path) {
+    info!(
+        "Compiling secret-network .proto files to Rust into '{}'...",
+        out_dir.display()
+    );
+
+    let root = env!("CARGO_MANIFEST_DIR");
+    let secret_dir = Path::new(SECRET_DIR);
+
+    let proto_includes_paths = [
+        format!("{}/../proto", root),
+        format!("{}/proto", secret_dir.display()),
+        format!("{}/third_party/proto", secret_dir.display()),
+    ];
+
+    // Paths
+    let proto_paths = [
+        format!("{}/proto/secret/compute", secret_dir.display()),
+        format!("{}/proto/secret/intertx", secret_dir.display()),
+        format!("{}/proto/secret/registration", secret_dir.display()),
+    ];
+
+    // List available proto files
+    let mut protos: Vec<PathBuf> = vec![];
+    collect_protos(&proto_paths, &mut protos);
+
+    // List available paths for dependencies
+    let includes: Vec<PathBuf> = proto_includes_paths.iter().map(PathBuf::from).collect();
+
+    // Compile all of the proto files, along with grpc service clients
+    info!("Compiling proto definitions and clients for GRPC services!");
+    tonic_build::configure()
+        .build_client(true)
+        .build_server(false)
+        .out_dir(out_dir)
         .compile(&protos, &includes)
         .unwrap();
 
