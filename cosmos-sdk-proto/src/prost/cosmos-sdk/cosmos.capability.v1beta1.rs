@@ -1,3 +1,4 @@
+// @generated
 /// Capability defines an implementation of an object capability. The index
 /// provided to a Capability must be globally unique.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -42,3 +43,4 @@ pub struct GenesisState {
     #[prost(message, repeated, tag = "2")]
     pub owners: ::prost::alloc::vec::Vec<GenesisOwners>,
 }
+// @@protoc_insertion_point(module)

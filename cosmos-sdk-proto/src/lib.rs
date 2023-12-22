@@ -2,16 +2,20 @@
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/cosmos/cosmos-rust/main/.images/cosmos.png"
 )]
-#![cfg_attr(docsrs, feature(doc_cfg))]
-#![allow(rustdoc::bare_urls, rustdoc::broken_intra_doc_links)]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![allow(
+    rustdoc::bare_urls,
+    rustdoc::broken_intra_doc_links,
+    clippy::derive_partial_eq_without_eq
+)]
 #![forbid(unsafe_code)]
 #![warn(trivial_casts, trivial_numeric_casts, unused_import_braces)]
 
 pub mod traits;
-mod type_urls;
+mod type_names;
 
 pub use prost;
-pub use prost_types::Any;
+pub use prost_types::{Any, Timestamp};
 pub use tendermint_proto as tendermint;
 
 /// The version (commit hash) of the Cosmos SDK used when generating this library.
@@ -159,6 +163,9 @@ pub mod cosmos {
 
     /// Messages and services handling governance
     pub mod gov {
+        pub mod v1 {
+            include!("prost/cosmos-sdk/cosmos.gov.v1.rs");
+        }
         pub mod v1beta1 {
             include!("prost/cosmos-sdk/cosmos.gov.v1beta1.rs");
         }
@@ -223,7 +230,6 @@ pub mod cosmos {
 
 /// CosmWasm protobuf definitions.
 #[cfg(feature = "cosmwasm")]
-#[cfg_attr(docsrs, doc(cfg(feature = "cosmwasm")))]
 pub mod cosmwasm {
     /// Messages and services handling CosmWasm.
     pub mod wasm {

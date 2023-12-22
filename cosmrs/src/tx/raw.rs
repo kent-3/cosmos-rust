@@ -32,12 +32,11 @@ impl Raw {
 
     /// Broadcast this transaction using the provided RPC client
     #[cfg(feature = "rpc")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "rpc")))]
     pub async fn broadcast_commit<C>(&self, client: &C) -> Result<TxCommitResponse>
     where
         C: rpc::Client + Send + Sync,
     {
-        Ok(client.broadcast_tx_commit(self.to_bytes()?.into()).await?)
+        Ok(client.broadcast_tx_commit(self.to_bytes()?).await?)
     }
 }
 

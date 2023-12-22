@@ -2,7 +2,7 @@
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/cosmos/cosmos-rust/main/.images/cosmos.png"
 )]
-#![cfg_attr(docsrs, feature(doc_cfg))]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![forbid(unsafe_code)]
 #![warn(
     clippy::checked_conversions,
@@ -32,6 +32,7 @@ pub mod bank;
 pub mod crypto;
 pub mod distribution;
 pub mod feegrant;
+pub mod slashing;
 pub mod staking;
 pub mod tx;
 pub mod vesting;
@@ -40,7 +41,6 @@ pub mod vesting;
 pub mod cosmwasm;
 
 #[cfg(feature = "dev")]
-#[cfg_attr(docsrs, doc(cfg(feature = "dev")))]
 pub mod dev;
 
 mod base;
@@ -57,9 +57,7 @@ pub use eyre::Report as ErrorReport;
 pub use tendermint;
 
 #[cfg(feature = "bip32")]
-#[cfg_attr(docsrs, doc(cfg(feature = "bip32")))]
 pub use bip32;
 
 #[cfg(feature = "rpc")]
-#[cfg_attr(docsrs, doc(cfg(feature = "rpc")))]
 pub use tendermint_rpc as rpc;

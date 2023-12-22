@@ -10,7 +10,7 @@ use crate::{
     tx::Tx,
 };
 use std::{ffi::OsStr, panic, process, str, time::Duration};
-use tendermint_rpc::abci::transaction::Hash;
+use tendermint::Hash;
 use tokio::time;
 
 /// Docker image (on Docker Hub) containing a single-node test environment for
@@ -35,13 +35,13 @@ where
     let result = panic::catch_unwind(f);
 
     if result.is_err() {
-        let logs = exec_docker_command("logs", &[&container_id]);
+        let logs = exec_docker_command("logs", [&container_id]);
 
         println!("\n---- docker stdout ----");
         println!("{}", logs);
     }
 
-    exec_docker_command("kill", &[&container_id]);
+    exec_docker_command("kill", [&container_id]);
 
     match result {
         Ok(res) => res,

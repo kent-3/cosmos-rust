@@ -1,3 +1,4 @@
+// @generated
 /// PubKey is an ed25519 public key for handling Tendermint keys in SDK.
 /// It's needed for Any serialization and SDK compatibility.
 /// It must not be used in a non Tendermint key context because it doesn't implement
@@ -15,3 +16,4 @@ pub struct PrivKey {
     #[prost(bytes = "vec", tag = "1")]
     pub key: ::prost::alloc::vec::Vec<u8>,
 }
+// @@protoc_insertion_point(module)

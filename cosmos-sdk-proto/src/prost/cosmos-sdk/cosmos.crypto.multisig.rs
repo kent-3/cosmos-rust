@@ -1,3 +1,4 @@
+// @generated
 /// LegacyAminoPubKey specifies a public key type
 /// which nests multiple public keys and a threshold,
 /// it uses legacy amino address rules.
@@ -8,3 +9,4 @@ pub struct LegacyAminoPubKey {
     #[prost(message, repeated, tag = "2")]
     pub public_keys: ::prost::alloc::vec::Vec<::prost_types::Any>,
 }
+// @@protoc_insertion_point(module)

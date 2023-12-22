@@ -5,6 +5,68 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.20.0 (2023-10-03)
+### Added
+- Expose `gov::v1` module ([#437])
+
+### Changed
+- MSRV 1.72 (#[428])
+- Migrate to `neoeinstein-prost`/`neoeinstein-tonic` ([#429])
+- Bump `tendermint-proto` dependency to v0.34 ([#431])
+- Replace `TypeUrl` trait with `prost::Name` trait ([#432])
+- Deprecate `MessageExt::{from_any, to_any}` ([#438])
+- Bump `COSMOS_SDK_REV` to v0.46.15 ([#439])
+
+[#428]: https://github.com/cosmos/cosmos-rust/pull/428
+[#429]: https://github.com/cosmos/cosmos-rust/pull/429
+[#431]: https://github.com/cosmos/cosmos-rust/pull/431
+[#432]: https://github.com/cosmos/cosmos-rust/pull/432
+[#437]: https://github.com/cosmos/cosmos-rust/pull/437
+[#438]: https://github.com/cosmos/cosmos-rust/pull/438
+[#439]: https://github.com/cosmos/cosmos-rust/pull/439
+
+## 0.19.0 (2023-05-03)
+### Changed
+- Use `buf` to generate Cosmos SDK protos ([#393])
+- Bump `COSMOS_SDK_REV` to v0.46.12 ([#395])
+- Bump `tendermint-proto` to v0.32 ([#400])
+
+[#393]: https://github.com/cosmos/cosmos-rust/pull/393
+[#395]: https://github.com/cosmos/cosmos-rust/pull/395
+[#400]: https://github.com/cosmos/cosmos-rust/pull/400
+
+## 0.18.0 (2023-04-17)
+### Added
+- TypeUrl for missing proposal types as well as others ([#360])
+- TypeUrl for some of structs from /cosmos.tx.v1beta1 namespace ([#384])
+
+### Changed
+- Bump `tendermint-proto` to v0.31 ([#385])
+- Bump `tonic` to v0.9 ([#386])
+
+[#360]: https://github.com/cosmos/cosmos-rust/pull/360
+[#384]: https://github.com/cosmos/cosmos-rust/pull/384
+[#385]: https://github.com/cosmos/cosmos-rust/pull/385
+[#386]: https://github.com/cosmos/cosmos-rust/pull/386
+
+## 0.17.0 (2023-03-21)
+### Added
+- Support for `wasmd` >=0.29 by generating files via buf ([#358])
+
+### Changed
+- Bump tendermint-rs crates to 0.30 ([#354])
+- MSRV 1.63 ([#356])
+
+[#354]: https://github.com/cosmos/cosmos-rust/pull/354
+[#356]: https://github.com/cosmos/cosmos-rust/pull/356
+[#358]: https://github.com/cosmos/cosmos-rust/pull/358
+
+## 0.16.0 (2022-11-30)
+### Changed
+- Bump tendermint-rs crates to 0.27 ([#306])
+
+[#306]: https://github.com/cosmos/cosmos-rust/pull/306
+
 ## 0.15.0 (2022-11-07)
 ### Added
 - `TypeUrl` impl for auth accounts ([#285])

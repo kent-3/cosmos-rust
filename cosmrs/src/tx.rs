@@ -21,7 +21,8 @@
 //! The following example illustrates how to build, sign, and parse
 //! a Cosmos SDK transaction:
 //!
-//! ```
+#![cfg_attr(feature = "getrandom", doc = " ```ignore")]
+#![cfg_attr(not(feature = "getrandom"), doc = " ```ignore")]
 //! # fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
 //! use cosmrs::{
 //!     bank::MsgSend,
@@ -172,19 +173,12 @@ impl Tx {
 
     /// Use RPC to find a transaction by its hash.
     #[cfg(feature = "rpc")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "rpc")))]
     pub async fn find_by_hash<C>(rpc_client: &C, tx_hash: Hash) -> Result<Tx>
     where
         C: rpc::Client + Send + Sync,
     {
-        // TODO(tarcieri): better conversion or unified `Hash` type, see tendermint-rs#1221
-        let tx_hash = match tx_hash {
-            Hash::Sha256(bytes) => tendermint_rpc::abci::transaction::Hash::new(bytes),
-            _ => return Err(Error::Crypto.into()),
-        };
-
         let response = rpc_client.tx(tx_hash, false).await?;
-        Tx::from_bytes(response.tx.as_bytes())
+        Tx::from_bytes(&response.tx)
     }
 }
 

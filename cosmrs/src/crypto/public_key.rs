@@ -58,7 +58,7 @@ impl PublicKey {
     /// Convert this [`PublicKey`] to a Protobuf [`Any`] type.
     pub fn to_any(&self) -> Result<Any> {
         let value = match self.0 {
-            tendermint::PublicKey::Ed25519(_) => proto::cosmos::crypto::secp256k1::PubKey {
+            tendermint::PublicKey::Ed25519(_) => proto::cosmos::crypto::ed25519::PubKey {
                 key: self.to_bytes(),
             }
             .to_bytes()?,
@@ -194,7 +194,7 @@ impl From<PublicKey> for PublicKeyJson {
 impl From<&PublicKey> for PublicKeyJson {
     fn from(public_key: &PublicKey) -> PublicKeyJson {
         let type_url = public_key.type_url().to_owned();
-        let key = String::from_utf8(base64::encode(&public_key.to_bytes())).expect("UTF-8 error");
+        let key = String::from_utf8(base64::encode(public_key.to_bytes())).expect("UTF-8 error");
         PublicKeyJson { type_url, key }
     }
 }

@@ -1,3 +1,4 @@
+// @generated
 /// Pairs defines a repeated slice of Pair objects.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Pairs {
@@ -12,3 +13,4 @@ pub struct Pair {
     #[prost(bytes = "vec", tag = "2")]
     pub value: ::prost::alloc::vec::Vec<u8>,
 }
+// @@protoc_insertion_point(module)
