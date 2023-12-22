@@ -1,3 +1,4 @@
+// @generated
 /// MultiSignature wraps the signatures from a multisig.LegacyAminoPubKey.
 /// See cosmos.tx.v1betata1.ModeInfo.Multi for how to specify which signers
 /// signed and with which modes.
@@ -17,3 +18,4 @@ pub struct CompactBitArray {
     #[prost(bytes = "vec", tag = "2")]
     pub elems: ::prost::alloc::vec::Vec<u8>,
 }
+// @@protoc_insertion_point(module)

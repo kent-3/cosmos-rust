@@ -21,7 +21,7 @@ impl AccountId {
     /// Create an [`AccountId`] with the given human-readable prefix and
     /// public key hash.
     pub fn new(prefix: &str, bytes: &[u8]) -> Result<Self> {
-        let id = bech32::encode(prefix, &bytes);
+        let id = bech32::encode(prefix, bytes);
 
         if !prefix.chars().all(|c| matches!(c, 'a'..='z' | '0'..='9')) {
             return Err(Error::AccountId { id })
@@ -79,7 +79,12 @@ impl FromStr for AccountId {
     type Err = ErrorReport;
 
     fn from_str(s: &str) -> Result<Self> {
-        let (hrp, bytes) = bech32::decode(s).wrap_err(format!("invalid bech32: '{}'", s))?;
+        let (hrp, bytes) = if s.starts_with(|c: char| c.is_uppercase()) {
+            bech32::decode_upper(s)
+        } else {
+            bech32::decode(s)
+        }
+        .wrap_err(format!("invalid bech32: '{}'", s))?;
         Self::new(&hrp, &bytes)
     }
 }
@@ -144,6 +149,14 @@ mod tests {
     #[test]
     fn with_digit() {
         "okp41urdh3smlstyafjtyg0d606egllhwp8kvnw0d2f"
+            .parse::<AccountId>()
+            .unwrap();
+    }
+
+    /// See https://en.bitcoin.it/wiki/BIP_0173 -- UPPERCASE is a valid bech32
+    #[test]
+    fn with_uppercase() {
+        "STARS1JUME25TTJLCAQQJZJJQX9HUMVZE3VCC8QF2KWL"
             .parse::<AccountId>()
             .unwrap();
     }

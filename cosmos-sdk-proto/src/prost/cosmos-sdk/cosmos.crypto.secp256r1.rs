@@ -1,3 +1,4 @@
+// @generated
 /// PubKey defines a secp256r1 ECDSA public key.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PubKey {
@@ -13,3 +14,4 @@ pub struct PrivKey {
     #[prost(bytes = "vec", tag = "1")]
     pub secret: ::prost::alloc::vec::Vec<u8>,
 }
+// @@protoc_insertion_point(module)

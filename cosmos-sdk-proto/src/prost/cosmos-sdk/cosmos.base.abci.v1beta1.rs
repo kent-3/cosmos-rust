@@ -1,3 +1,4 @@
+// @generated
 /// TxResponse defines a structure containing relevant tx data and metadata. The
 /// tags are stringified and the log is JSON decoded.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -43,12 +44,12 @@ pub struct TxResponse {
     pub timestamp: ::prost::alloc::string::String,
     /// Events defines all the events emitted by processing a transaction. Note,
     /// these events include those emitted by processing all the messages and those
-    /// emitted from the ante handler. Whereas Logs contains the events, with
+    /// emitted from the ante. Whereas Logs contains the events, with
     /// additional metadata, emitted only by processing the messages.
     ///
     /// Since: cosmos-sdk 0.42.11, 0.44.5, 0.45
     #[prost(message, repeated, tag = "13")]
-    pub events: ::prost::alloc::vec::Vec<::tendermint_proto::abci::Event>,
+    pub events: ::prost::alloc::vec::Vec<::tendermint_proto::v0_34::abci::Event>,
 }
 /// ABCIMessageLog defines a structure containing an indexed tx ABCI message log.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -95,6 +96,9 @@ pub struct GasInfo {
 pub struct Result {
     /// Data is any data returned from message or handler execution. It MUST be
     /// length prefixed in order to separate data from multiple message executions.
+    /// Deprecated. This field is still populated, but prefer msg_response instead
+    /// because it also contains the Msg response typeURL.
+    #[deprecated]
     #[prost(bytes = "vec", tag = "1")]
     pub data: ::prost::alloc::vec::Vec<u8>,
     /// Log contains the log information from message or handler execution.
@@ -103,7 +107,12 @@ pub struct Result {
     /// Events contains a slice of Event objects that were emitted during message
     /// or handler execution.
     #[prost(message, repeated, tag = "3")]
-    pub events: ::prost::alloc::vec::Vec<::tendermint_proto::abci::Event>,
+    pub events: ::prost::alloc::vec::Vec<::tendermint_proto::v0_34::abci::Event>,
+    /// msg_responses contains the Msg handler responses type packed in Anys.
+    ///
+    /// Since: cosmos-sdk 0.46
+    #[prost(message, repeated, tag = "4")]
+    pub msg_responses: ::prost::alloc::vec::Vec<::prost_types::Any>,
 }
 /// SimulationResponse defines the response generated when a transaction is
 /// successfully simulated.
@@ -127,8 +136,15 @@ pub struct MsgData {
 /// for each message.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TxMsgData {
+    /// data field is deprecated and not populated.
+    #[deprecated]
     #[prost(message, repeated, tag = "1")]
     pub data: ::prost::alloc::vec::Vec<MsgData>,
+    /// msg_responses contains the Msg handler responses packed into Anys.
+    ///
+    /// Since: cosmos-sdk 0.46
+    #[prost(message, repeated, tag = "2")]
+    pub msg_responses: ::prost::alloc::vec::Vec<::prost_types::Any>,
 }
 /// SearchTxsResult defines a structure for querying txs pageable
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -152,3 +168,4 @@ pub struct SearchTxsResult {
     #[prost(message, repeated, tag = "6")]
     pub txs: ::prost::alloc::vec::Vec<TxResponse>,
 }
+// @@protoc_insertion_point(module)

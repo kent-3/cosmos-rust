@@ -4,6 +4,76 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.15.0 (2023-10-03)
+### Added
+- Export `msg_clear_admin` and `msg_update_admin` types ([#419])
+- `getrandom` feature ([#434])
+
+### Changed
+- Bound `EcdsaSigner` trait on `Sync + Send` ([#410])
+- MSRV 1.72 ([#428])
+- Bump `tendermint`/`tendermint-rpc` dependencies to v0.34 ([#431])
+- Replace `TypeUrl` with `Name` trait ([#432])
+- Bump `cosmos-sdk-proto` to v0.20 ([#440])
+
+### Fixed
+- `PublicKey::to_any` ([#406])
+
+[#406]: https://github.com/cosmos/cosmos-rust/pull/406
+[#410]: https://github.com/cosmos/cosmos-rust/pull/410
+[#419]: https://github.com/cosmos/cosmos-rust/pull/419
+[#428]: https://github.com/cosmos/cosmos-rust/pull/428
+[#431]: https://github.com/cosmos/cosmos-rust/pull/431
+[#432]: https://github.com/cosmos/cosmos-rust/pull/432
+[#434]: https://github.com/cosmos/cosmos-rust/pull/434
+[#440]: https://github.com/cosmos/cosmos-rust/pull/440
+
+## 0.14.0 (2023-05-03)
+### Changed
+- Bump `tendermint`/`tendermint-rpc` to v0.32 ([#400])
+- Bump `cosmos-sdk-proto` to v0.19 ([#401])
+
+[#400]: https://github.com/cosmos/cosmos-rust/pull/400
+[#401]: https://github.com/cosmos/cosmos-rust/pull/401
+
+## 0.13.0 (2023-04-17)
+### Changed
+- Bump signature + tendermint-rs dependencies; MSRV 1.65 ([#385])
+  - `bip32` v0.5
+  - `ecdsa` v0.16
+  - `k256` v0.13
+  - `tendermint` v0.31
+  - `tendermint-proto` v0.31
+  - `tendermint-rpc` v0.31
+- Bump `cosmos-sdk-proto` to v0.18 ([#390])
+
+[#385]: https://github.com/cosmos/cosmos-rust/pull/385
+[#390]: https://github.com/cosmos/cosmos-rust/pull/390
+
+## 0.12.0 (2023-03-23)
+### Added
+- Expose `cosmwasm::msg_migrate_contract` structs ([#315])
+
+### Changed
+- Bump tendermint-rs crates to 0.30 ([#354])
+- MSRV 1.63 ([#356])
+- Support for `wasmd` >=0.29 by generating files via `buf` ([#358])
+- Bump `cosmos-sdk-proto` to v0.17 ([#367])
+
+[#315]: https://github.com/cosmos/cosmos-rust/pull/315
+[#354]: https://github.com/cosmos/cosmos-rust/pull/354
+[#356]: https://github.com/cosmos/cosmos-rust/pull/356
+[#358]: https://github.com/cosmos/cosmos-rust/pull/358
+[#367]: https://github.com/cosmos/cosmos-rust/pull/367
+
+## 0.11.0 (2022-11-30)
+### Changed
+- Bump tendermint-rs crates to 0.27 ([#306])
+- Bump `cosmos-sdk-proto` to v0.16 ([#307])
+
+[#306]: https://github.com/cosmos/cosmos-rust/pull/306
+[#307]: https://github.com/cosmos/cosmos-rust/pull/307
+
 ## 0.10.0 (2022-11-07)
 ### Added
 - `Coin` constructor ([#291])

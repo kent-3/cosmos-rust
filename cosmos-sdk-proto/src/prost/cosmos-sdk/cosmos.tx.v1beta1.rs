@@ -1,3 +1,4 @@
+// @generated
 /// Tx is the standard type used for broadcasting transactions.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Tx {
@@ -55,6 +56,39 @@ pub struct SignDoc {
     #[prost(uint64, tag = "4")]
     pub account_number: u64,
 }
+/// SignDocDirectAux is the type used for generating sign bytes for
+/// SIGN_MODE_DIRECT_AUX.
+///
+/// Since: cosmos-sdk 0.46
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SignDocDirectAux {
+    /// body_bytes is protobuf serialization of a TxBody that matches the
+    /// representation in TxRaw.
+    #[prost(bytes = "vec", tag = "1")]
+    pub body_bytes: ::prost::alloc::vec::Vec<u8>,
+    /// public_key is the public key of the signing account.
+    #[prost(message, optional, tag = "2")]
+    pub public_key: ::core::option::Option<::prost_types::Any>,
+    /// chain_id is the identifier of the chain this transaction targets.
+    /// It prevents signed transactions from being used on another chain by an
+    /// attacker.
+    #[prost(string, tag = "3")]
+    pub chain_id: ::prost::alloc::string::String,
+    /// account_number is the account number of the account in state.
+    #[prost(uint64, tag = "4")]
+    pub account_number: u64,
+    /// sequence is the sequence number of the signing account.
+    #[prost(uint64, tag = "5")]
+    pub sequence: u64,
+    /// Tip is the optional tip used for transactions fees paid in another denom.
+    /// It should be left empty if the signer is not the tipper for this
+    /// transaction.
+    ///
+    /// This field is ignored if the chain didn't enable tips, i.e. didn't add the
+    /// `TipDecorator` in its posthandler.
+    #[prost(message, optional, tag = "6")]
+    pub tip: ::core::option::Option<Tip>,
+}
 /// TxBody is the body of a transaction that all signers sign over.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TxBody {
@@ -103,6 +137,14 @@ pub struct AuthInfo {
     /// of the signers. This can be estimated via simulation.
     #[prost(message, optional, tag = "2")]
     pub fee: ::core::option::Option<Fee>,
+    /// Tip is the optional tip used for transactions fees paid in another denom.
+    ///
+    /// This field is ignored if the chain didn't enable tips, i.e. didn't add the
+    /// `TipDecorator` in its posthandler.
+    ///
+    /// Since: cosmos-sdk 0.46
+    #[prost(message, optional, tag = "3")]
+    pub tip: ::core::option::Option<Tip>,
 }
 /// SignerInfo describes the public key and signing mode of a single top-level
 /// signer.
@@ -189,6 +231,43 @@ pub struct Fee {
     #[prost(string, tag = "4")]
     pub granter: ::prost::alloc::string::String,
 }
+/// Tip is the tip used for meta-transactions.
+///
+/// Since: cosmos-sdk 0.46
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Tip {
+    /// amount is the amount of the tip
+    #[prost(message, repeated, tag = "1")]
+    pub amount: ::prost::alloc::vec::Vec<super::super::base::v1beta1::Coin>,
+    /// tipper is the address of the account paying for the tip
+    #[prost(string, tag = "2")]
+    pub tipper: ::prost::alloc::string::String,
+}
+/// AuxSignerData is the intermediary format that an auxiliary signer (e.g. a
+/// tipper) builds and sends to the fee payer (who will build and broadcast the
+/// actual tx). AuxSignerData is not a valid tx in itself, and will be rejected
+/// by the node if sent directly as-is.
+///
+/// Since: cosmos-sdk 0.46
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AuxSignerData {
+    /// address is the bech32-encoded address of the auxiliary signer. If using
+    /// AuxSignerData across different chains, the bech32 prefix of the target
+    /// chain (where the final transaction is broadcasted) should be used.
+    #[prost(string, tag = "1")]
+    pub address: ::prost::alloc::string::String,
+    /// sign_doc is the SIGN_MODE_DIRECT_AUX sign doc that the auxiliary signer
+    /// signs. Note: we use the same sign doc even if we're signing with
+    /// LEGACY_AMINO_JSON.
+    #[prost(message, optional, tag = "2")]
+    pub sign_doc: ::core::option::Option<SignDocDirectAux>,
+    /// mode is the signing mode of the single signer.
+    #[prost(enumeration = "super::signing::v1beta1::SignMode", tag = "3")]
+    pub mode: i32,
+    /// sig is the signature of the sign doc.
+    #[prost(bytes = "vec", tag = "4")]
+    pub sig: ::prost::alloc::vec::Vec<u8>,
+}
 /// GetTxsEventRequest is the request type for the Service.TxsByEvents
 /// RPC method.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -197,10 +276,19 @@ pub struct GetTxsEventRequest {
     #[prost(string, repeated, tag = "1")]
     pub events: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     /// pagination defines a pagination for the request.
+    /// Deprecated post v0.46.x: use page and limit instead.
+    #[deprecated]
     #[prost(message, optional, tag = "2")]
     pub pagination: ::core::option::Option<super::super::base::query::v1beta1::PageRequest>,
     #[prost(enumeration = "OrderBy", tag = "3")]
     pub order_by: i32,
+    /// page is the page number to query, starts at 1. If not provided, will default to first page.
+    #[prost(uint64, tag = "4")]
+    pub page: u64,
+    /// limit is the total number of results to be returned in the result page.
+    /// If left empty it will default to a value to be set by each app.
+    #[prost(uint64, tag = "5")]
+    pub limit: u64,
 }
 /// GetTxsEventResponse is the response type for the Service.TxsByEvents
 /// RPC method.
@@ -213,8 +301,13 @@ pub struct GetTxsEventResponse {
     #[prost(message, repeated, tag = "2")]
     pub tx_responses: ::prost::alloc::vec::Vec<super::super::base::abci::v1beta1::TxResponse>,
     /// pagination defines a pagination for the response.
+    /// Deprecated post v0.46.x: use total instead.
+    #[deprecated]
     #[prost(message, optional, tag = "3")]
     pub pagination: ::core::option::Option<super::super::base::query::v1beta1::PageResponse>,
+    /// total is total number of results available
+    #[prost(uint64, tag = "4")]
+    pub total: u64,
 }
 /// BroadcastTxRequest is the request type for the Service.BroadcastTxRequest
 /// RPC method.
@@ -300,9 +393,9 @@ pub struct GetBlockWithTxsResponse {
     #[prost(message, repeated, tag = "1")]
     pub txs: ::prost::alloc::vec::Vec<Tx>,
     #[prost(message, optional, tag = "2")]
-    pub block_id: ::core::option::Option<::tendermint_proto::types::BlockId>,
+    pub block_id: ::core::option::Option<::tendermint_proto::v0_34::types::BlockId>,
     #[prost(message, optional, tag = "3")]
-    pub block: ::core::option::Option<::tendermint_proto::types::Block>,
+    pub block: ::core::option::Option<::tendermint_proto::v0_34::types::Block>,
     /// pagination defines a pagination for the response.
     #[prost(message, optional, tag = "4")]
     pub pagination: ::core::option::Option<super::super::base::query::v1beta1::PageResponse>,
@@ -361,441 +454,5 @@ impl BroadcastMode {
         }
     }
 }
-/// Generated client implementations.
-#[cfg(feature = "grpc")]
-#[cfg_attr(docsrs, doc(cfg(feature = "grpc")))]
-pub mod service_client {
-    #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
-    use tonic::codegen::http::Uri;
-    use tonic::codegen::*;
-    /// Service defines a gRPC service for interacting with transactions.
-    #[derive(Debug, Clone)]
-    pub struct ServiceClient<T> {
-        inner: tonic::client::Grpc<T>,
-    }
-    #[cfg(feature = "grpc-transport")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "grpc-transport")))]
-    impl ServiceClient<tonic::transport::Channel> {
-        /// Attempt to create a new client by connecting to a given endpoint.
-        pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
-        where
-            D: std::convert::TryInto<tonic::transport::Endpoint>,
-            D::Error: Into<StdError>,
-        {
-            let conn = tonic::transport::Endpoint::new(dst)?.connect().await?;
-            Ok(Self::new(conn))
-        }
-    }
-    impl<T> ServiceClient<T>
-    where
-        T: tonic::client::GrpcService<tonic::body::BoxBody>,
-        T::Error: Into<StdError>,
-        T::ResponseBody: Body<Data = Bytes> + Send + 'static,
-        <T::ResponseBody as Body>::Error: Into<StdError> + Send,
-    {
-        pub fn new(inner: T) -> Self {
-            let inner = tonic::client::Grpc::new(inner);
-            Self { inner }
-        }
-        pub fn with_origin(inner: T, origin: Uri) -> Self {
-            let inner = tonic::client::Grpc::with_origin(inner, origin);
-            Self { inner }
-        }
-        pub fn with_interceptor<F>(
-            inner: T,
-            interceptor: F,
-        ) -> ServiceClient<InterceptedService<T, F>>
-        where
-            F: tonic::service::Interceptor,
-            T::ResponseBody: Default,
-            T: tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
-                Response = http::Response<
-                    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
-                >,
-            >,
-            <T as tonic::codegen::Service<http::Request<tonic::body::BoxBody>>>::Error:
-                Into<StdError> + Send + Sync,
-        {
-            ServiceClient::new(InterceptedService::new(inner, interceptor))
-        }
-        /// Compress requests with the given encoding.
-        ///
-        /// This requires the server to support it otherwise it might respond with an
-        /// error.
-        #[must_use]
-        pub fn send_compressed(mut self, encoding: CompressionEncoding) -> Self {
-            self.inner = self.inner.send_compressed(encoding);
-            self
-        }
-        /// Enable decompressing responses.
-        #[must_use]
-        pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
-            self.inner = self.inner.accept_compressed(encoding);
-            self
-        }
-        /// Simulate simulates executing a transaction for estimating gas usage.
-        pub async fn simulate(
-            &mut self,
-            request: impl tonic::IntoRequest<super::SimulateRequest>,
-        ) -> Result<tonic::Response<super::SimulateResponse>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/cosmos.tx.v1beta1.Service/Simulate");
-            self.inner.unary(request.into_request(), path, codec).await
-        }
-        /// GetTx fetches a tx by hash.
-        pub async fn get_tx(
-            &mut self,
-            request: impl tonic::IntoRequest<super::GetTxRequest>,
-        ) -> Result<tonic::Response<super::GetTxResponse>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static("/cosmos.tx.v1beta1.Service/GetTx");
-            self.inner.unary(request.into_request(), path, codec).await
-        }
-        /// BroadcastTx broadcast transaction.
-        pub async fn broadcast_tx(
-            &mut self,
-            request: impl tonic::IntoRequest<super::BroadcastTxRequest>,
-        ) -> Result<tonic::Response<super::BroadcastTxResponse>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path =
-                http::uri::PathAndQuery::from_static("/cosmos.tx.v1beta1.Service/BroadcastTx");
-            self.inner.unary(request.into_request(), path, codec).await
-        }
-        /// GetTxsEvent fetches txs by event.
-        pub async fn get_txs_event(
-            &mut self,
-            request: impl tonic::IntoRequest<super::GetTxsEventRequest>,
-        ) -> Result<tonic::Response<super::GetTxsEventResponse>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path =
-                http::uri::PathAndQuery::from_static("/cosmos.tx.v1beta1.Service/GetTxsEvent");
-            self.inner.unary(request.into_request(), path, codec).await
-        }
-        /// GetBlockWithTxs fetches a block with decoded txs.
-        ///
-        /// Since: cosmos-sdk 0.45.2
-        pub async fn get_block_with_txs(
-            &mut self,
-            request: impl tonic::IntoRequest<super::GetBlockWithTxsRequest>,
-        ) -> Result<tonic::Response<super::GetBlockWithTxsResponse>, tonic::Status> {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::new(
-                    tonic::Code::Unknown,
-                    format!("Service was not ready: {}", e.into()),
-                )
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path =
-                http::uri::PathAndQuery::from_static("/cosmos.tx.v1beta1.Service/GetBlockWithTxs");
-            self.inner.unary(request.into_request(), path, codec).await
-        }
-    }
-}
-/// Generated server implementations.
-#[cfg(feature = "grpc")]
-#[cfg_attr(docsrs, doc(cfg(feature = "grpc")))]
-pub mod service_server {
-    #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
-    use tonic::codegen::*;
-    ///Generated trait containing gRPC methods that should be implemented for use with ServiceServer.
-    #[async_trait]
-    pub trait Service: Send + Sync + 'static {
-        /// Simulate simulates executing a transaction for estimating gas usage.
-        async fn simulate(
-            &self,
-            request: tonic::Request<super::SimulateRequest>,
-        ) -> Result<tonic::Response<super::SimulateResponse>, tonic::Status>;
-        /// GetTx fetches a tx by hash.
-        async fn get_tx(
-            &self,
-            request: tonic::Request<super::GetTxRequest>,
-        ) -> Result<tonic::Response<super::GetTxResponse>, tonic::Status>;
-        /// BroadcastTx broadcast transaction.
-        async fn broadcast_tx(
-            &self,
-            request: tonic::Request<super::BroadcastTxRequest>,
-        ) -> Result<tonic::Response<super::BroadcastTxResponse>, tonic::Status>;
-        /// GetTxsEvent fetches txs by event.
-        async fn get_txs_event(
-            &self,
-            request: tonic::Request<super::GetTxsEventRequest>,
-        ) -> Result<tonic::Response<super::GetTxsEventResponse>, tonic::Status>;
-        /// GetBlockWithTxs fetches a block with decoded txs.
-        ///
-        /// Since: cosmos-sdk 0.45.2
-        async fn get_block_with_txs(
-            &self,
-            request: tonic::Request<super::GetBlockWithTxsRequest>,
-        ) -> Result<tonic::Response<super::GetBlockWithTxsResponse>, tonic::Status>;
-    }
-    /// Service defines a gRPC service for interacting with transactions.
-    #[derive(Debug)]
-    pub struct ServiceServer<T: Service> {
-        inner: _Inner<T>,
-        accept_compression_encodings: EnabledCompressionEncodings,
-        send_compression_encodings: EnabledCompressionEncodings,
-    }
-    struct _Inner<T>(Arc<T>);
-    impl<T: Service> ServiceServer<T> {
-        pub fn new(inner: T) -> Self {
-            Self::from_arc(Arc::new(inner))
-        }
-        pub fn from_arc(inner: Arc<T>) -> Self {
-            let inner = _Inner(inner);
-            Self {
-                inner,
-                accept_compression_encodings: Default::default(),
-                send_compression_encodings: Default::default(),
-            }
-        }
-        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
-        where
-            F: tonic::service::Interceptor,
-        {
-            InterceptedService::new(Self::new(inner), interceptor)
-        }
-        /// Enable decompressing requests with the given encoding.
-        #[must_use]
-        pub fn accept_compressed(mut self, encoding: CompressionEncoding) -> Self {
-            self.accept_compression_encodings.enable(encoding);
-            self
-        }
-        /// Compress responses with the given encoding, if the client supports it.
-        #[must_use]
-        pub fn send_compressed(mut self, encoding: CompressionEncoding) -> Self {
-            self.send_compression_encodings.enable(encoding);
-            self
-        }
-    }
-    impl<T, B> tonic::codegen::Service<http::Request<B>> for ServiceServer<T>
-    where
-        T: Service,
-        B: Body + Send + 'static,
-        B::Error: Into<StdError> + Send + 'static,
-    {
-        type Response = http::Response<tonic::body::BoxBody>;
-        type Error = std::convert::Infallible;
-        type Future = BoxFuture<Self::Response, Self::Error>;
-        fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
-            Poll::Ready(Ok(()))
-        }
-        fn call(&mut self, req: http::Request<B>) -> Self::Future {
-            let inner = self.inner.clone();
-            match req.uri().path() {
-                "/cosmos.tx.v1beta1.Service/Simulate" => {
-                    #[allow(non_camel_case_types)]
-                    struct SimulateSvc<T: Service>(pub Arc<T>);
-                    impl<T: Service> tonic::server::UnaryService<super::SimulateRequest> for SimulateSvc<T> {
-                        type Response = super::SimulateResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::SimulateRequest>,
-                        ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).simulate(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = SimulateSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
-                            accept_compression_encodings,
-                            send_compression_encodings,
-                        );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/cosmos.tx.v1beta1.Service/GetTx" => {
-                    #[allow(non_camel_case_types)]
-                    struct GetTxSvc<T: Service>(pub Arc<T>);
-                    impl<T: Service> tonic::server::UnaryService<super::GetTxRequest> for GetTxSvc<T> {
-                        type Response = super::GetTxResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::GetTxRequest>,
-                        ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).get_tx(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = GetTxSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
-                            accept_compression_encodings,
-                            send_compression_encodings,
-                        );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/cosmos.tx.v1beta1.Service/BroadcastTx" => {
-                    #[allow(non_camel_case_types)]
-                    struct BroadcastTxSvc<T: Service>(pub Arc<T>);
-                    impl<T: Service> tonic::server::UnaryService<super::BroadcastTxRequest> for BroadcastTxSvc<T> {
-                        type Response = super::BroadcastTxResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::BroadcastTxRequest>,
-                        ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).broadcast_tx(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = BroadcastTxSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
-                            accept_compression_encodings,
-                            send_compression_encodings,
-                        );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/cosmos.tx.v1beta1.Service/GetTxsEvent" => {
-                    #[allow(non_camel_case_types)]
-                    struct GetTxsEventSvc<T: Service>(pub Arc<T>);
-                    impl<T: Service> tonic::server::UnaryService<super::GetTxsEventRequest> for GetTxsEventSvc<T> {
-                        type Response = super::GetTxsEventResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::GetTxsEventRequest>,
-                        ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).get_txs_event(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = GetTxsEventSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
-                            accept_compression_encodings,
-                            send_compression_encodings,
-                        );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/cosmos.tx.v1beta1.Service/GetBlockWithTxs" => {
-                    #[allow(non_camel_case_types)]
-                    struct GetBlockWithTxsSvc<T: Service>(pub Arc<T>);
-                    impl<T: Service> tonic::server::UnaryService<super::GetBlockWithTxsRequest>
-                        for GetBlockWithTxsSvc<T>
-                    {
-                        type Response = super::GetBlockWithTxsResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::GetBlockWithTxsRequest>,
-                        ) -> Self::Future {
-                            let inner = self.0.clone();
-                            let fut = async move { (*inner).get_block_with_txs(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = GetBlockWithTxsSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
-                            accept_compression_encodings,
-                            send_compression_encodings,
-                        );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                _ => Box::pin(async move {
-                    Ok(http::Response::builder()
-                        .status(200)
-                        .header("grpc-status", "12")
-                        .header("content-type", "application/grpc")
-                        .body(empty_body())
-                        .unwrap())
-                }),
-            }
-        }
-    }
-    impl<T: Service> Clone for ServiceServer<T> {
-        fn clone(&self) -> Self {
-            let inner = self.inner.clone();
-            Self {
-                inner,
-                accept_compression_encodings: self.accept_compression_encodings,
-                send_compression_encodings: self.send_compression_encodings,
-            }
-        }
-    }
-    impl<T: Service> Clone for _Inner<T> {
-        fn clone(&self) -> Self {
-            Self(self.0.clone())
-        }
-    }
-    impl<T: std::fmt::Debug> std::fmt::Debug for _Inner<T> {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            write!(f, "{:?}", self.0)
-        }
-    }
-    impl<T: Service> tonic::server::NamedService for ServiceServer<T> {
-        const NAME: &'static str = "cosmos.tx.v1beta1.Service";
-    }
-}
+include!("cosmos.tx.v1beta1.tonic.rs");
+// @@protoc_insertion_point(module)

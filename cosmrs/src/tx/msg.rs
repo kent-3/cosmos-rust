@@ -1,7 +1,7 @@
 //! Transaction messages
 
 use crate::{
-    proto::traits::{MessageExt, TypeUrl},
+    proto::traits::{MessageExt, Name},
     Any, ErrorReport, Result,
 };
 
@@ -15,11 +15,11 @@ pub trait Msg:
     Clone + Sized + TryFrom<Self::Proto, Error = ErrorReport> + Into<Self::Proto>
 {
     /// Protocol Buffers type
-    type Proto: Default + MessageExt + Sized + TypeUrl;
+    type Proto: Default + MessageExt + Name + Sized;
 
     /// Parse this message proto from [`Any`].
     fn from_any(any: &Any) -> Result<Self> {
-        Self::Proto::from_any(any)?.try_into()
+        any.to_msg::<Self::Proto>()?.try_into()
     }
 
     /// Serialize this message proto as [`Any`].
@@ -29,6 +29,6 @@ pub trait Msg:
 
     /// Convert this message proto into [`Any`].
     fn into_any(self) -> Result<Any> {
-        Ok(self.into().to_any()?)
+        Ok(Any::from_msg(&self.into())?)
     }
 }

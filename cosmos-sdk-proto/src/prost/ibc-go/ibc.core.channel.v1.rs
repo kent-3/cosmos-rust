@@ -1,6 +1,7 @@
 /// Channel defines pipeline for exactly-once packet delivery between specific
 /// modules on separate blockchains, which has at least one end capable of
 /// sending packets and one end capable of receiving packets.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Channel {
     /// current state of the channel end
@@ -22,6 +23,7 @@ pub struct Channel {
 }
 /// IdentifiedChannel defines a channel with additional port and channel
 /// identifier fields.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct IdentifiedChannel {
     /// current state of the channel end
@@ -48,6 +50,7 @@ pub struct IdentifiedChannel {
     pub channel_id: ::prost::alloc::string::String,
 }
 /// Counterparty defines a channel end counterparty
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Counterparty {
     /// port on the counterparty chain which owns the other end of the channel.
@@ -58,6 +61,7 @@ pub struct Counterparty {
     pub channel_id: ::prost::alloc::string::String,
 }
 /// Packet defines a type that carries data across different chains through IBC
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Packet {
     /// number corresponds to the order of sends and receives, where a Packet
@@ -91,6 +95,7 @@ pub struct Packet {
 /// packet commitments, acknowledgements, and receipts.
 /// Caller is responsible for knowing the context necessary to interpret this
 /// state as a commitment, acknowledgement, or a receipt.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PacketState {
     /// channel port identifier.
@@ -113,6 +118,7 @@ pub struct PacketState {
 /// The first byte of any message with this format will be the non-ASCII values
 /// `0xaa` (result) or `0xb2` (error). Implemented as defined by ICS:
 /// <https://github.com/cosmos/ibc/tree/master/spec/core/ics-004-channel-and-packet-semantics#acknowledgement-envelope>
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Acknowledgement {
     /// response contains either a result or an error and must be non-empty
@@ -122,6 +128,7 @@ pub struct Acknowledgement {
 /// Nested message and enum types in `Acknowledgement`.
 pub mod acknowledgement {
     /// response contains either a result or an error and must be non-empty
+    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Response {
         #[prost(bytes, tag = "21")]
@@ -162,6 +169,17 @@ impl State {
             State::Closed => "STATE_CLOSED",
         }
     }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "STATE_UNINITIALIZED_UNSPECIFIED" => Some(Self::UninitializedUnspecified),
+            "STATE_INIT" => Some(Self::Init),
+            "STATE_TRYOPEN" => Some(Self::Tryopen),
+            "STATE_OPEN" => Some(Self::Open),
+            "STATE_CLOSED" => Some(Self::Closed),
+            _ => None,
+        }
+    }
 }
 /// Order defines if a channel is ORDERED or UNORDERED
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
@@ -187,9 +205,19 @@ impl Order {
             Order::Ordered => "ORDER_ORDERED",
         }
     }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "ORDER_NONE_UNSPECIFIED" => Some(Self::NoneUnspecified),
+            "ORDER_UNORDERED" => Some(Self::Unordered),
+            "ORDER_ORDERED" => Some(Self::Ordered),
+            _ => None,
+        }
+    }
 }
 /// MsgChannelOpenInit defines an sdk.Msg to initialize a channel handshake. It
 /// is called by a relayer on Chain A.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgChannelOpenInit {
     #[prost(string, tag = "1")]
@@ -200,6 +228,7 @@ pub struct MsgChannelOpenInit {
     pub signer: ::prost::alloc::string::String,
 }
 /// MsgChannelOpenInitResponse defines the Msg/ChannelOpenInit response type.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgChannelOpenInitResponse {
     #[prost(string, tag = "1")]
@@ -208,6 +237,7 @@ pub struct MsgChannelOpenInitResponse {
 /// MsgChannelOpenInit defines a msg sent by a Relayer to try to open a channel
 /// on Chain B. The version field within the Channel field has been deprecated. Its
 /// value will be ignored by core IBC.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgChannelOpenTry {
     #[prost(string, tag = "1")]
@@ -229,10 +259,12 @@ pub struct MsgChannelOpenTry {
     pub signer: ::prost::alloc::string::String,
 }
 /// MsgChannelOpenTryResponse defines the Msg/ChannelOpenTry response type.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgChannelOpenTryResponse {}
 /// MsgChannelOpenAck defines a msg sent by a Relayer to Chain A to acknowledge
 /// the change of channel state to TRYOPEN on Chain B.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgChannelOpenAck {
     #[prost(string, tag = "1")]
@@ -251,10 +283,12 @@ pub struct MsgChannelOpenAck {
     pub signer: ::prost::alloc::string::String,
 }
 /// MsgChannelOpenAckResponse defines the Msg/ChannelOpenAck response type.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgChannelOpenAckResponse {}
 /// MsgChannelOpenConfirm defines a msg sent by a Relayer to Chain B to
 /// acknowledge the change of channel state to OPEN on Chain A.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgChannelOpenConfirm {
     #[prost(string, tag = "1")]
@@ -270,10 +304,12 @@ pub struct MsgChannelOpenConfirm {
 }
 /// MsgChannelOpenConfirmResponse defines the Msg/ChannelOpenConfirm response
 /// type.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgChannelOpenConfirmResponse {}
 /// MsgChannelCloseInit defines a msg sent by a Relayer to Chain A
 /// to close a channel with Chain B.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgChannelCloseInit {
     #[prost(string, tag = "1")]
@@ -284,10 +320,12 @@ pub struct MsgChannelCloseInit {
     pub signer: ::prost::alloc::string::String,
 }
 /// MsgChannelCloseInitResponse defines the Msg/ChannelCloseInit response type.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgChannelCloseInitResponse {}
 /// MsgChannelCloseConfirm defines a msg sent by a Relayer to Chain B
 /// to acknowledge the change of channel state to CLOSED on Chain A.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgChannelCloseConfirm {
     #[prost(string, tag = "1")]
@@ -303,9 +341,11 @@ pub struct MsgChannelCloseConfirm {
 }
 /// MsgChannelCloseConfirmResponse defines the Msg/ChannelCloseConfirm response
 /// type.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgChannelCloseConfirmResponse {}
 /// MsgRecvPacket receives incoming IBC packet
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgRecvPacket {
     #[prost(message, optional, tag = "1")]
@@ -318,12 +358,14 @@ pub struct MsgRecvPacket {
     pub signer: ::prost::alloc::string::String,
 }
 /// MsgRecvPacketResponse defines the Msg/RecvPacket response type.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgRecvPacketResponse {
     #[prost(enumeration = "ResponseResultType", tag = "1")]
     pub result: i32,
 }
 /// MsgTimeout receives timed-out packet
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgTimeout {
     #[prost(message, optional, tag = "1")]
@@ -338,12 +380,14 @@ pub struct MsgTimeout {
     pub signer: ::prost::alloc::string::String,
 }
 /// MsgTimeoutResponse defines the Msg/Timeout response type.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgTimeoutResponse {
     #[prost(enumeration = "ResponseResultType", tag = "1")]
     pub result: i32,
 }
 /// MsgTimeoutOnClose timed-out packet upon counterparty channel closure.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgTimeoutOnClose {
     #[prost(message, optional, tag = "1")]
@@ -360,12 +404,14 @@ pub struct MsgTimeoutOnClose {
     pub signer: ::prost::alloc::string::String,
 }
 /// MsgTimeoutOnCloseResponse defines the Msg/TimeoutOnClose response type.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgTimeoutOnCloseResponse {
     #[prost(enumeration = "ResponseResultType", tag = "1")]
     pub result: i32,
 }
 /// MsgAcknowledgement receives incoming IBC acknowledgement
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgAcknowledgement {
     #[prost(message, optional, tag = "1")]
@@ -380,6 +426,7 @@ pub struct MsgAcknowledgement {
     pub signer: ::prost::alloc::string::String,
 }
 /// MsgAcknowledgementResponse defines the Msg/Acknowledgement response type.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgAcknowledgementResponse {
     #[prost(enumeration = "ResponseResultType", tag = "1")]
@@ -408,10 +455,18 @@ impl ResponseResultType {
             ResponseResultType::ResponseResultSuccess => "RESPONSE_RESULT_SUCCESS",
         }
     }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "RESPONSE_RESULT_UNSPECIFIED" => Some(Self::ResponseResultUnspecified),
+            "RESPONSE_RESULT_NOOP" => Some(Self::ResponseResultNoop),
+            "RESPONSE_RESULT_SUCCESS" => Some(Self::ResponseResultSuccess),
+            _ => None,
+        }
+    }
 }
 /// Generated client implementations.
 #[cfg(feature = "grpc")]
-#[cfg_attr(docsrs, doc(cfg(feature = "grpc")))]
 pub mod msg_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::http::Uri;
@@ -422,12 +477,11 @@ pub mod msg_client {
         inner: tonic::client::Grpc<T>,
     }
     #[cfg(feature = "grpc-transport")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "grpc-transport")))]
     impl MsgClient<tonic::transport::Channel> {
         /// Attempt to create a new client by connecting to a given endpoint.
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
-            D: std::convert::TryInto<tonic::transport::Endpoint>,
+            D: TryInto<tonic::transport::Endpoint>,
             D::Error: Into<StdError>,
         {
             let conn = tonic::transport::Endpoint::new(dst)?.connect().await?;
@@ -479,11 +533,28 @@ pub mod msg_client {
             self.inner = self.inner.accept_compressed(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_decoding_message_size(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_encoding_message_size(limit);
+            self
+        }
         /// ChannelOpenInit defines a rpc handler method for MsgChannelOpenInit.
         pub async fn channel_open_init(
             &mut self,
             request: impl tonic::IntoRequest<super::MsgChannelOpenInit>,
-        ) -> Result<tonic::Response<super::MsgChannelOpenInitResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::MsgChannelOpenInitResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -493,13 +564,19 @@ pub mod msg_client {
             let codec = tonic::codec::ProstCodec::default();
             let path =
                 http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Msg/ChannelOpenInit");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Msg",
+                "ChannelOpenInit",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// ChannelOpenTry defines a rpc handler method for MsgChannelOpenTry.
         pub async fn channel_open_try(
             &mut self,
             request: impl tonic::IntoRequest<super::MsgChannelOpenTry>,
-        ) -> Result<tonic::Response<super::MsgChannelOpenTryResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::MsgChannelOpenTryResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -509,13 +586,17 @@ pub mod msg_client {
             let codec = tonic::codec::ProstCodec::default();
             let path =
                 http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Msg/ChannelOpenTry");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("ibc.core.channel.v1.Msg", "ChannelOpenTry"));
+            self.inner.unary(req, path, codec).await
         }
         /// ChannelOpenAck defines a rpc handler method for MsgChannelOpenAck.
         pub async fn channel_open_ack(
             &mut self,
             request: impl tonic::IntoRequest<super::MsgChannelOpenAck>,
-        ) -> Result<tonic::Response<super::MsgChannelOpenAckResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::MsgChannelOpenAckResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -525,13 +606,17 @@ pub mod msg_client {
             let codec = tonic::codec::ProstCodec::default();
             let path =
                 http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Msg/ChannelOpenAck");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("ibc.core.channel.v1.Msg", "ChannelOpenAck"));
+            self.inner.unary(req, path, codec).await
         }
         /// ChannelOpenConfirm defines a rpc handler method for MsgChannelOpenConfirm.
         pub async fn channel_open_confirm(
             &mut self,
             request: impl tonic::IntoRequest<super::MsgChannelOpenConfirm>,
-        ) -> Result<tonic::Response<super::MsgChannelOpenConfirmResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::MsgChannelOpenConfirmResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -541,13 +626,19 @@ pub mod msg_client {
             let codec = tonic::codec::ProstCodec::default();
             let path =
                 http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Msg/ChannelOpenConfirm");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Msg",
+                "ChannelOpenConfirm",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// ChannelCloseInit defines a rpc handler method for MsgChannelCloseInit.
         pub async fn channel_close_init(
             &mut self,
             request: impl tonic::IntoRequest<super::MsgChannelCloseInit>,
-        ) -> Result<tonic::Response<super::MsgChannelCloseInitResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::MsgChannelCloseInitResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -557,14 +648,22 @@ pub mod msg_client {
             let codec = tonic::codec::ProstCodec::default();
             let path =
                 http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Msg/ChannelCloseInit");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Msg",
+                "ChannelCloseInit",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// ChannelCloseConfirm defines a rpc handler method for
         /// MsgChannelCloseConfirm.
         pub async fn channel_close_confirm(
             &mut self,
             request: impl tonic::IntoRequest<super::MsgChannelCloseConfirm>,
-        ) -> Result<tonic::Response<super::MsgChannelCloseConfirmResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::MsgChannelCloseConfirmResponse>,
+            tonic::Status,
+        > {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -575,13 +674,19 @@ pub mod msg_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/ibc.core.channel.v1.Msg/ChannelCloseConfirm",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Msg",
+                "ChannelCloseConfirm",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// RecvPacket defines a rpc handler method for MsgRecvPacket.
         pub async fn recv_packet(
             &mut self,
             request: impl tonic::IntoRequest<super::MsgRecvPacket>,
-        ) -> Result<tonic::Response<super::MsgRecvPacketResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::MsgRecvPacketResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -590,13 +695,17 @@ pub mod msg_client {
             })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Msg/RecvPacket");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("ibc.core.channel.v1.Msg", "RecvPacket"));
+            self.inner.unary(req, path, codec).await
         }
         /// Timeout defines a rpc handler method for MsgTimeout.
         pub async fn timeout(
             &mut self,
             request: impl tonic::IntoRequest<super::MsgTimeout>,
-        ) -> Result<tonic::Response<super::MsgTimeoutResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::MsgTimeoutResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -605,13 +714,17 @@ pub mod msg_client {
             })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Msg/Timeout");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("ibc.core.channel.v1.Msg", "Timeout"));
+            self.inner.unary(req, path, codec).await
         }
         /// TimeoutOnClose defines a rpc handler method for MsgTimeoutOnClose.
         pub async fn timeout_on_close(
             &mut self,
             request: impl tonic::IntoRequest<super::MsgTimeoutOnClose>,
-        ) -> Result<tonic::Response<super::MsgTimeoutOnCloseResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::MsgTimeoutOnCloseResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -621,13 +734,17 @@ pub mod msg_client {
             let codec = tonic::codec::ProstCodec::default();
             let path =
                 http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Msg/TimeoutOnClose");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("ibc.core.channel.v1.Msg", "TimeoutOnClose"));
+            self.inner.unary(req, path, codec).await
         }
         /// Acknowledgement defines a rpc handler method for MsgAcknowledgement.
         pub async fn acknowledgement(
             &mut self,
             request: impl tonic::IntoRequest<super::MsgAcknowledgement>,
-        ) -> Result<tonic::Response<super::MsgAcknowledgementResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::MsgAcknowledgementResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -637,11 +754,17 @@ pub mod msg_client {
             let codec = tonic::codec::ProstCodec::default();
             let path =
                 http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Msg/Acknowledgement");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Msg",
+                "Acknowledgement",
+            ));
+            self.inner.unary(req, path, codec).await
         }
     }
 }
 /// QueryChannelRequest is the request type for the Query/Channel RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryChannelRequest {
     /// port unique identifier
@@ -654,6 +777,7 @@ pub struct QueryChannelRequest {
 /// QueryChannelResponse is the response type for the Query/Channel RPC method.
 /// Besides the Channel end, it includes a proof and the height from which the
 /// proof was retrieved.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryChannelResponse {
     /// channel associated with the request identifiers
@@ -667,6 +791,7 @@ pub struct QueryChannelResponse {
     pub proof_height: ::core::option::Option<super::super::client::v1::Height>,
 }
 /// QueryChannelsRequest is the request type for the Query/Channels RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryChannelsRequest {
     /// pagination request
@@ -676,6 +801,7 @@ pub struct QueryChannelsRequest {
     >,
 }
 /// QueryChannelsResponse is the response type for the Query/Channels RPC method.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryChannelsResponse {
     /// list of stored channels of the chain.
@@ -692,6 +818,7 @@ pub struct QueryChannelsResponse {
 }
 /// QueryConnectionChannelsRequest is the request type for the
 /// Query/QueryConnectionChannels RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryConnectionChannelsRequest {
     /// connection unique identifier
@@ -705,6 +832,7 @@ pub struct QueryConnectionChannelsRequest {
 }
 /// QueryConnectionChannelsResponse is the Response type for the
 /// Query/QueryConnectionChannels RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryConnectionChannelsResponse {
     /// list of channels associated with a connection.
@@ -721,6 +849,7 @@ pub struct QueryConnectionChannelsResponse {
 }
 /// QueryChannelClientStateRequest is the request type for the Query/ClientState
 /// RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryChannelClientStateRequest {
     /// port unique identifier
@@ -732,6 +861,7 @@ pub struct QueryChannelClientStateRequest {
 }
 /// QueryChannelClientStateResponse is the Response type for the
 /// Query/QueryChannelClientState RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryChannelClientStateResponse {
     /// client state associated with the channel
@@ -747,6 +877,7 @@ pub struct QueryChannelClientStateResponse {
 }
 /// QueryChannelConsensusStateRequest is the request type for the
 /// Query/ConsensusState RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryChannelConsensusStateRequest {
     /// port unique identifier
@@ -764,6 +895,7 @@ pub struct QueryChannelConsensusStateRequest {
 }
 /// QueryChannelClientStateResponse is the Response type for the
 /// Query/QueryChannelClientState RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryChannelConsensusStateResponse {
     /// consensus state associated with the channel
@@ -781,6 +913,7 @@ pub struct QueryChannelConsensusStateResponse {
 }
 /// QueryPacketCommitmentRequest is the request type for the
 /// Query/PacketCommitment RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryPacketCommitmentRequest {
     /// port unique identifier
@@ -796,6 +929,7 @@ pub struct QueryPacketCommitmentRequest {
 /// QueryPacketCommitmentResponse defines the client query response for a packet
 /// which also includes a proof and the height from which the proof was
 /// retrieved
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryPacketCommitmentResponse {
     /// packet associated with the request fields
@@ -810,6 +944,7 @@ pub struct QueryPacketCommitmentResponse {
 }
 /// QueryPacketCommitmentsRequest is the request type for the
 /// Query/QueryPacketCommitments RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryPacketCommitmentsRequest {
     /// port unique identifier
@@ -826,6 +961,7 @@ pub struct QueryPacketCommitmentsRequest {
 }
 /// QueryPacketCommitmentsResponse is the request type for the
 /// Query/QueryPacketCommitments RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryPacketCommitmentsResponse {
     #[prost(message, repeated, tag = "1")]
@@ -841,6 +977,7 @@ pub struct QueryPacketCommitmentsResponse {
 }
 /// QueryPacketReceiptRequest is the request type for the
 /// Query/PacketReceipt RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryPacketReceiptRequest {
     /// port unique identifier
@@ -856,6 +993,7 @@ pub struct QueryPacketReceiptRequest {
 /// QueryPacketReceiptResponse defines the client query response for a packet
 /// receipt which also includes a proof, and the height from which the proof was
 /// retrieved
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryPacketReceiptResponse {
     /// success flag for if receipt exists
@@ -870,6 +1008,7 @@ pub struct QueryPacketReceiptResponse {
 }
 /// QueryPacketAcknowledgementRequest is the request type for the
 /// Query/PacketAcknowledgement RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryPacketAcknowledgementRequest {
     /// port unique identifier
@@ -885,6 +1024,7 @@ pub struct QueryPacketAcknowledgementRequest {
 /// QueryPacketAcknowledgementResponse defines the client query response for a
 /// packet which also includes a proof and the height from which the
 /// proof was retrieved
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryPacketAcknowledgementResponse {
     /// packet associated with the request fields
@@ -899,6 +1039,7 @@ pub struct QueryPacketAcknowledgementResponse {
 }
 /// QueryPacketAcknowledgementsRequest is the request type for the
 /// Query/QueryPacketCommitments RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryPacketAcknowledgementsRequest {
     /// port unique identifier
@@ -918,6 +1059,7 @@ pub struct QueryPacketAcknowledgementsRequest {
 }
 /// QueryPacketAcknowledgemetsResponse is the request type for the
 /// Query/QueryPacketAcknowledgements RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryPacketAcknowledgementsResponse {
     #[prost(message, repeated, tag = "1")]
@@ -933,6 +1075,7 @@ pub struct QueryPacketAcknowledgementsResponse {
 }
 /// QueryUnreceivedPacketsRequest is the request type for the
 /// Query/UnreceivedPackets RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryUnreceivedPacketsRequest {
     /// port unique identifier
@@ -947,6 +1090,7 @@ pub struct QueryUnreceivedPacketsRequest {
 }
 /// QueryUnreceivedPacketsResponse is the response type for the
 /// Query/UnreceivedPacketCommitments RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryUnreceivedPacketsResponse {
     /// list of unreceived packet sequences
@@ -958,6 +1102,7 @@ pub struct QueryUnreceivedPacketsResponse {
 }
 /// QueryUnreceivedAcks is the request type for the
 /// Query/UnreceivedAcks RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryUnreceivedAcksRequest {
     /// port unique identifier
@@ -972,6 +1117,7 @@ pub struct QueryUnreceivedAcksRequest {
 }
 /// QueryUnreceivedAcksResponse is the response type for the
 /// Query/UnreceivedAcks RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryUnreceivedAcksResponse {
     /// list of unreceived acknowledgement sequences
@@ -983,6 +1129,7 @@ pub struct QueryUnreceivedAcksResponse {
 }
 /// QueryNextSequenceReceiveRequest is the request type for the
 /// Query/QueryNextSequenceReceiveRequest RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryNextSequenceReceiveRequest {
     /// port unique identifier
@@ -994,6 +1141,7 @@ pub struct QueryNextSequenceReceiveRequest {
 }
 /// QuerySequenceResponse is the request type for the
 /// Query/QueryNextSequenceReceiveResponse RPC method
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryNextSequenceReceiveResponse {
     /// next sequence receive number
@@ -1008,7 +1156,6 @@ pub struct QueryNextSequenceReceiveResponse {
 }
 /// Generated client implementations.
 #[cfg(feature = "grpc")]
-#[cfg_attr(docsrs, doc(cfg(feature = "grpc")))]
 pub mod query_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::http::Uri;
@@ -1019,12 +1166,11 @@ pub mod query_client {
         inner: tonic::client::Grpc<T>,
     }
     #[cfg(feature = "grpc-transport")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "grpc-transport")))]
     impl QueryClient<tonic::transport::Channel> {
         /// Attempt to create a new client by connecting to a given endpoint.
         pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
         where
-            D: std::convert::TryInto<tonic::transport::Endpoint>,
+            D: TryInto<tonic::transport::Endpoint>,
             D::Error: Into<StdError>,
         {
             let conn = tonic::transport::Endpoint::new(dst)?.connect().await?;
@@ -1079,11 +1225,28 @@ pub mod query_client {
             self.inner = self.inner.accept_compressed(encoding);
             self
         }
+        /// Limits the maximum size of a decoded message.
+        ///
+        /// Default: `4MB`
+        #[must_use]
+        pub fn max_decoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_decoding_message_size(limit);
+            self
+        }
+        /// Limits the maximum size of an encoded message.
+        ///
+        /// Default: `usize::MAX`
+        #[must_use]
+        pub fn max_encoding_message_size(mut self, limit: usize) -> Self {
+            self.inner = self.inner.max_encoding_message_size(limit);
+            self
+        }
         /// Channel queries an IBC Channel.
         pub async fn channel(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryChannelRequest>,
-        ) -> Result<tonic::Response<super::QueryChannelResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::QueryChannelResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1092,13 +1255,17 @@ pub mod query_client {
             })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Query/Channel");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("ibc.core.channel.v1.Query", "Channel"));
+            self.inner.unary(req, path, codec).await
         }
         /// Channels queries all the IBC channels of a chain.
         pub async fn channels(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryChannelsRequest>,
-        ) -> Result<tonic::Response<super::QueryChannelsResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::QueryChannelsResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1107,15 +1274,20 @@ pub mod query_client {
             })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Query/Channels");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("ibc.core.channel.v1.Query", "Channels"));
+            self.inner.unary(req, path, codec).await
         }
         /// ConnectionChannels queries all the channels associated with a connection
         /// end.
         pub async fn connection_channels(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryConnectionChannelsRequest>,
-        ) -> Result<tonic::Response<super::QueryConnectionChannelsResponse>, tonic::Status>
-        {
+        ) -> std::result::Result<
+            tonic::Response<super::QueryConnectionChannelsResponse>,
+            tonic::Status,
+        > {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1126,15 +1298,22 @@ pub mod query_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/ibc.core.channel.v1.Query/ConnectionChannels",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Query",
+                "ConnectionChannels",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// ChannelClientState queries for the client state for the channel associated
         /// with the provided channel identifiers.
         pub async fn channel_client_state(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryChannelClientStateRequest>,
-        ) -> Result<tonic::Response<super::QueryChannelClientStateResponse>, tonic::Status>
-        {
+        ) -> std::result::Result<
+            tonic::Response<super::QueryChannelClientStateResponse>,
+            tonic::Status,
+        > {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1145,15 +1324,22 @@ pub mod query_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/ibc.core.channel.v1.Query/ChannelClientState",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Query",
+                "ChannelClientState",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// ChannelConsensusState queries for the consensus state for the channel
         /// associated with the provided channel identifiers.
         pub async fn channel_consensus_state(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryChannelConsensusStateRequest>,
-        ) -> Result<tonic::Response<super::QueryChannelConsensusStateResponse>, tonic::Status>
-        {
+        ) -> std::result::Result<
+            tonic::Response<super::QueryChannelConsensusStateResponse>,
+            tonic::Status,
+        > {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1164,13 +1350,19 @@ pub mod query_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/ibc.core.channel.v1.Query/ChannelConsensusState",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Query",
+                "ChannelConsensusState",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// PacketCommitment queries a stored packet commitment hash.
         pub async fn packet_commitment(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryPacketCommitmentRequest>,
-        ) -> Result<tonic::Response<super::QueryPacketCommitmentResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::QueryPacketCommitmentResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1180,14 +1372,22 @@ pub mod query_client {
             let codec = tonic::codec::ProstCodec::default();
             let path =
                 http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Query/PacketCommitment");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Query",
+                "PacketCommitment",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// PacketCommitments returns all the packet commitments hashes associated
         /// with a channel.
         pub async fn packet_commitments(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryPacketCommitmentsRequest>,
-        ) -> Result<tonic::Response<super::QueryPacketCommitmentsResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::QueryPacketCommitmentsResponse>,
+            tonic::Status,
+        > {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1198,14 +1398,20 @@ pub mod query_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/ibc.core.channel.v1.Query/PacketCommitments",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Query",
+                "PacketCommitments",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// PacketReceipt queries if a given packet sequence has been received on the
         /// queried chain
         pub async fn packet_receipt(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryPacketReceiptRequest>,
-        ) -> Result<tonic::Response<super::QueryPacketReceiptResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::QueryPacketReceiptResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1215,14 +1421,21 @@ pub mod query_client {
             let codec = tonic::codec::ProstCodec::default();
             let path =
                 http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Query/PacketReceipt");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Query",
+                "PacketReceipt",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// PacketAcknowledgement queries a stored packet acknowledgement hash.
         pub async fn packet_acknowledgement(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryPacketAcknowledgementRequest>,
-        ) -> Result<tonic::Response<super::QueryPacketAcknowledgementResponse>, tonic::Status>
-        {
+        ) -> std::result::Result<
+            tonic::Response<super::QueryPacketAcknowledgementResponse>,
+            tonic::Status,
+        > {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1233,15 +1446,22 @@ pub mod query_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/ibc.core.channel.v1.Query/PacketAcknowledgement",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Query",
+                "PacketAcknowledgement",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// PacketAcknowledgements returns all the packet acknowledgements associated
         /// with a channel.
         pub async fn packet_acknowledgements(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryPacketAcknowledgementsRequest>,
-        ) -> Result<tonic::Response<super::QueryPacketAcknowledgementsResponse>, tonic::Status>
-        {
+        ) -> std::result::Result<
+            tonic::Response<super::QueryPacketAcknowledgementsResponse>,
+            tonic::Status,
+        > {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1252,14 +1472,22 @@ pub mod query_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/ibc.core.channel.v1.Query/PacketAcknowledgements",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Query",
+                "PacketAcknowledgements",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// UnreceivedPackets returns all the unreceived IBC packets associated with a
         /// channel and sequences.
         pub async fn unreceived_packets(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryUnreceivedPacketsRequest>,
-        ) -> Result<tonic::Response<super::QueryUnreceivedPacketsResponse>, tonic::Status> {
+        ) -> std::result::Result<
+            tonic::Response<super::QueryUnreceivedPacketsResponse>,
+            tonic::Status,
+        > {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1270,14 +1498,20 @@ pub mod query_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/ibc.core.channel.v1.Query/UnreceivedPackets",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Query",
+                "UnreceivedPackets",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// UnreceivedAcks returns all the unreceived IBC acknowledgements associated
         /// with a channel and sequences.
         pub async fn unreceived_acks(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryUnreceivedAcksRequest>,
-        ) -> Result<tonic::Response<super::QueryUnreceivedAcksResponse>, tonic::Status> {
+        ) -> std::result::Result<tonic::Response<super::QueryUnreceivedAcksResponse>, tonic::Status>
+        {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1287,14 +1521,21 @@ pub mod query_client {
             let codec = tonic::codec::ProstCodec::default();
             let path =
                 http::uri::PathAndQuery::from_static("/ibc.core.channel.v1.Query/UnreceivedAcks");
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Query",
+                "UnreceivedAcks",
+            ));
+            self.inner.unary(req, path, codec).await
         }
         /// NextSequenceReceive returns the next receive sequence for a given channel.
         pub async fn next_sequence_receive(
             &mut self,
             request: impl tonic::IntoRequest<super::QueryNextSequenceReceiveRequest>,
-        ) -> Result<tonic::Response<super::QueryNextSequenceReceiveResponse>, tonic::Status>
-        {
+        ) -> std::result::Result<
+            tonic::Response<super::QueryNextSequenceReceiveResponse>,
+            tonic::Status,
+        > {
             self.inner.ready().await.map_err(|e| {
                 tonic::Status::new(
                     tonic::Code::Unknown,
@@ -1305,11 +1546,17 @@ pub mod query_client {
             let path = http::uri::PathAndQuery::from_static(
                 "/ibc.core.channel.v1.Query/NextSequenceReceive",
             );
-            self.inner.unary(request.into_request(), path, codec).await
+            let mut req = request.into_request();
+            req.extensions_mut().insert(GrpcMethod::new(
+                "ibc.core.channel.v1.Query",
+                "NextSequenceReceive",
+            ));
+            self.inner.unary(req, path, codec).await
         }
     }
 }
 /// GenesisState defines the ibc channel submodule's genesis state.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GenesisState {
     #[prost(message, repeated, tag = "1")]
@@ -1332,6 +1579,7 @@ pub struct GenesisState {
 }
 /// PacketSequence defines the genesis type necessary to retrieve and store
 /// next send and receive sequences.
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PacketSequence {
     #[prost(string, tag = "1")]

@@ -5,11 +5,10 @@ authors = ["Justin Kilpatrick <justin@althea.net>", "Tony Arcieri <tony@iqlusion
 edition = "2018"
 publish = false
 
-
 [dependencies]
-prost = "0.11"
-prost-build = "0.11"
-tonic = "0.8"
-tonic-build = "0.8"
+prost = "0.12"
+prost-build = "0.12"
+tonic = "0.10"
+tonic-build = "0.10"
 regex = "1"
 walkdir = "2"
