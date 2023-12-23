@@ -328,6 +328,30 @@ impl_name!(
     "ModeInfo"
 );
 
+#[cfg(feature = "secret-cosmwasm")]
+mod secret {
+    use super::full_name;
+    use crate::{secret, traits::Name};
+
+    const SECRET_PACKAGE: &str = "secret.compute.v1beta1";
+
+    impl_name!(
+        secret::compute::v1beta1::MsgStoreCode,
+        SECRET_PACKAGE,
+        "MsgStoreCode"
+    );
+    impl_name!(
+        secret::compute::v1beta1::MsgInstantiateContract,
+        SECRET_PACKAGE,
+        "MsgInstantiateContract"
+    );
+    impl_name!(
+        secret::compute::v1beta1::MsgExecuteContract,
+        SECRET_PACKAGE,
+        "MsgExecuteContract"
+    );
+}
+
 #[cfg(feature = "cosmwasm")]
 mod wasm {
     use super::full_name;
