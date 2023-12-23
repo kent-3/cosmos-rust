@@ -55,6 +55,8 @@ impl From<MsgStoreCode> for cosmwasm_proto::MsgStoreCode {
 pub struct MsgInstantiateContract {
     /// Sender is the that actor that signed the messages
     pub sender: AccountId,
+    /// Admin is an optional address that can execute migrations
+    pub admin: Option<AccountId>,
     /// The code id of the stored contract code
     pub code_id: u64,
     /// The label to give this contract instance
