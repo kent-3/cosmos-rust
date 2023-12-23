@@ -257,7 +257,7 @@ pub struct MsgInstantiateContract {
     #[prost(bytes = "vec", tag = "5")]
     pub init_msg: ::prost::alloc::vec::Vec<u8>,
     #[prost(message, repeated, tag = "6")]
-    pub init_funds: ::prost::alloc::vec::Vec<super::super::super::cosmos::base::v1beta1::Coin>,
+    pub init_funds: ::prost::alloc::vec::Vec<crate::cosmos::base::v1beta1::Coin>,
     /// used internally for encryption, should always be empty in a signed transaction
     #[prost(bytes = "vec", tag = "7")]
     pub callback_sig: ::prost::alloc::vec::Vec<u8>,
@@ -292,7 +292,7 @@ pub struct MsgExecuteContract {
     #[prost(string, tag = "4")]
     pub callback_code_hash: ::prost::alloc::string::String,
     #[prost(message, repeated, tag = "5")]
-    pub sent_funds: ::prost::alloc::vec::Vec<super::super::super::cosmos::base::v1beta1::Coin>,
+    pub sent_funds: ::prost::alloc::vec::Vec<crate::cosmos::base::v1beta1::Coin>,
     /// used internally for encryption, should always be empty in a signed transaction
     #[prost(bytes = "vec", tag = "6")]
     pub callback_sig: ::prost::alloc::vec::Vec<u8>,
@@ -719,7 +719,7 @@ pub struct DecryptedAnswers {
     pub answers: ::prost::alloc::vec::Vec<DecryptedAnswer>,
     #[prost(message, repeated, tag = "2")]
     pub output_logs:
-        ::prost::alloc::vec::Vec<super::super::super::cosmos::base::abci::v1beta1::StringEvent>,
+        ::prost::alloc::vec::Vec<crate::cosmos::base::abci::v1beta1::StringEvent>,
     #[prost(string, tag = "3")]
     pub output_error: ::prost::alloc::string::String,
     #[prost(string, tag = "4")]
