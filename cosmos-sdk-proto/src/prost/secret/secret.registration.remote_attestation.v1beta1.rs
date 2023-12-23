@@ -1,3 +1,4 @@
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QuoteReport {
     #[prost(string, tag = "1")]
@@ -15,6 +16,7 @@ pub struct QuoteReport {
     #[prost(string, repeated, tag = "7")]
     pub advisory_ids: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QuoteReportBody {
     #[prost(string, tag = "1")]
@@ -24,6 +26,7 @@ pub struct QuoteReportBody {
     #[prost(string, tag = "3")]
     pub report_data: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QuoteReportData {
     #[prost(uint64, tag = "1")]
@@ -33,6 +36,7 @@ pub struct QuoteReportData {
     #[prost(message, optional, tag = "3")]
     pub report_body: ::core::option::Option<QuoteReportBody>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EndorsedAttestationReport {
     #[prost(bytes = "vec", tag = "1")]
@@ -42,6 +46,7 @@ pub struct EndorsedAttestationReport {
     #[prost(bytes = "vec", tag = "3")]
     pub signing_cert: ::prost::alloc::vec::Vec<u8>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Sgxec256Signature {
     #[prost(string, tag = "1")]
@@ -49,6 +54,7 @@ pub struct Sgxec256Signature {
     #[prost(string, tag = "2")]
     pub gy: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlatformInfoBlob {
     #[prost(uint32, tag = "1")]
