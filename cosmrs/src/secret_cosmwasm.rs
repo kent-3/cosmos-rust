@@ -1,5 +1,5 @@
 use crate::{proto, tx::Msg, AccountId, Coin, ErrorReport, Result};
-use proto::cosmwasm::secret::compute::v1beta1 as cosmwasm_proto;
+use proto::secret::compute::v1beta1 as cosmwasm_proto;
 
 #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
 /// MsgStoreCode submit Wasm code to the system
@@ -56,7 +56,7 @@ pub struct MsgInstantiateContract {
     /// Sender is the that actor that signed the messages
     pub sender: AccountId,
     /// Admin is an optional address that can execute migrations
-    pub admin: Option<AccountId>,
+    pub admin: Option<String>,
     /// The code id of the stored contract code
     pub code_id: u64,
     /// The label to give this contract instance
@@ -78,6 +78,7 @@ impl TryFrom<cosmwasm_proto::MsgInstantiateContract> for MsgInstantiateContract 
             code_id: proto.code_id,
             label: proto.label,
             init_msg: proto.init_msg,
+            admin: Some(proto.admin),
         })
     }
 }
@@ -92,6 +93,7 @@ impl From<MsgInstantiateContract> for cosmwasm_proto::MsgInstantiateContract {
             init_msg: msg.init_msg,
             init_funds: vec![],
             callback_sig: vec![],
+            admin: "".to_string(),
         }
     }
 }
