@@ -3,63 +3,16 @@
 // TODO(tarcieri): generate these automatically using `prost-build`
 // See: https://github.com/tokio-rs/prost/issues/926
 
-use crate::{cosmos, ibc, traits::Name};
+use crate::{cosmos, traits::Name};
 
 macro_rules! impl_name {
     ($type:ty, $package:expr, $name:expr) => {
         impl Name for $type {
             const NAME: &'static str = $name;
             const PACKAGE: &'static str = $package;
-
-            fn full_name() -> String {
-                full_name::<Self>()
-            }
         }
     };
 }
-
-impl_name!(
-    ibc::core::client::v1::ClientUpdateProposal,
-    "ibc.core.client.v1",
-    "ClientUpdateProposal"
-);
-impl_name!(
-    ibc::core::client::v1::MsgUpdateClient,
-    "ibc.core.client.v1",
-    "MsgUpdateClient"
-);
-
-impl_name!(
-    ibc::core::channel::v1::MsgChannelOpenConfirm,
-    "ibc.core.channel.v1",
-    "MsgChannelOpenConfirm"
-);
-impl_name!(
-    ibc::core::channel::v1::MsgAcknowledgement,
-    "ibc.core.channel.v1",
-    "MsgAcknowledgement"
-);
-impl_name!(
-    ibc::core::channel::v1::MsgChannelOpenAck,
-    "ibc.core.channel.v1",
-    "MsgChannelOpenAck"
-);
-impl_name!(
-    ibc::core::channel::v1::MsgTimeout,
-    "ibc.core.channel.v1",
-    "MsgTimeout"
-);
-impl_name!(
-    ibc::core::channel::v1::MsgRecvPacket,
-    "ibc.core.channel.v1",
-    "MsgRecvPacket"
-);
-
-impl_name!(
-    ibc::applications::transfer::v1::MsgTransfer,
-    "ibc.applications.transfer.v1",
-    "MsgTransfer"
-);
 
 impl_name!(
     cosmos::upgrade::v1beta1::SoftwareUpgradeProposal,
@@ -73,6 +26,17 @@ impl_name!(
     "ParameterChangeProposal"
 );
 
+impl_name!(
+    cosmos::gov::v1::MsgSubmitProposal,
+    "cosmos.gov.v1",
+    "MsgSubmitProposal"
+);
+impl_name!(cosmos::gov::v1::MsgDeposit, "cosmos.gov.v1", "MsgDeposit");
+impl_name!(
+    cosmos::gov::v1::MsgVoteWeighted,
+    "cosmos.gov.v1",
+    "MsgVoteWeighted"
+);
 impl_name!(
     cosmos::gov::v1beta1::TextProposal,
     "cosmos.gov.v1beta1",
@@ -88,6 +52,7 @@ impl_name!(
     "cosmos.gov.v1beta1",
     "MsgDeposit"
 );
+impl_name!(cosmos::gov::v1::MsgVote, "cosmos.gov.v1", "MsgVote");
 impl_name!(
     cosmos::gov::v1beta1::MsgVote,
     "cosmos.gov.v1beta1",
@@ -280,6 +245,61 @@ impl_name!(
     "cosmos.staking.v1beta1",
     "MsgDelegateResponse"
 );
+impl_name!(
+    cosmos::staking::v1beta1::CommissionRates,
+    "cosmos.staking.v1beta1",
+    "CommissionRates"
+);
+impl_name!(
+    cosmos::staking::v1beta1::Commission,
+    "cosmos.staking.v1beta1",
+    "Commission"
+);
+impl_name!(
+    cosmos::staking::v1beta1::Description,
+    "cosmos.staking.v1beta1",
+    "Description"
+);
+impl_name!(
+    cosmos::staking::v1beta1::HistoricalInfo,
+    "cosmos.staking.v1beta1",
+    "HistoricalInfo"
+);
+impl_name!(
+    cosmos::staking::v1beta1::QueryHistoricalInfoRequest,
+    "cosmos.staking.v1beta1",
+    "QueryHistoricalInfoRequest"
+);
+impl_name!(
+    cosmos::staking::v1beta1::QueryHistoricalInfoResponse,
+    "cosmos.staking.v1beta1",
+    "QueryHistoricalInfoResponse"
+);
+impl_name!(
+    cosmos::staking::v1beta1::QueryValidatorRequest,
+    "cosmos.staking.v1beta1",
+    "QueryValidatorRequest"
+);
+impl_name!(
+    cosmos::staking::v1beta1::QueryValidatorResponse,
+    "cosmos.staking.v1beta1",
+    "QueryValidatorResponse"
+);
+impl_name!(
+    cosmos::staking::v1beta1::QueryValidatorsRequest,
+    "cosmos.staking.v1beta1",
+    "QueryValidatorsRequest"
+);
+impl_name!(
+    cosmos::staking::v1beta1::QueryValidatorsResponse,
+    "cosmos.staking.v1beta1",
+    "QueryValidatorsResponse"
+);
+impl_name!(
+    cosmos::staking::v1beta1::Validator,
+    "cosmos.staking.v1beta1",
+    "Validator"
+);
 
 impl_name!(
     cosmos::base::abci::v1beta1::MsgData,
@@ -303,6 +323,11 @@ impl_name!(
     "ModuleAccount"
 );
 
+impl_name!(
+    cosmos::authz::v1beta1::MsgGrant,
+    "cosmos.authz.v1beta1",
+    "MsgGrant"
+);
 impl_name!(
     cosmos::authz::v1beta1::MsgExec,
     "cosmos.authz.v1beta1",
@@ -330,7 +355,6 @@ impl_name!(
 
 #[cfg(feature = "cosmwasm")]
 mod wasm {
-    use super::full_name;
     use crate::{cosmwasm, traits::Name};
 
     const COSMWASM_PACKAGE: &str = "cosmwasm.wasm.v1";
@@ -460,9 +484,4 @@ mod wasm {
         COSMWASM_PACKAGE,
         "MsgClearAdminResponse"
     );
-}
-
-// TODO(tarcieri): remove this when tokio-rs/prost#923 is released (v0.12.1?)
-fn full_name<T: Name>() -> String {
-    format!("{}.{}", T::PACKAGE, T::NAME)
 }
