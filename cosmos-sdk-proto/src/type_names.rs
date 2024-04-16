@@ -355,7 +355,6 @@ impl_name!(
 
 #[cfg(feature = "secret-cosmwasm")]
 mod secret {
-    use super::full_name;
     use crate::{secret, traits::Name};
 
     const SECRET_PACKAGE: &str = "secret.compute.v1beta1";
