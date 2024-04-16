@@ -7,6 +7,3 @@
 [submodule "ibc-go"]
 	path = ibc-go
 	url = https://github.com/cosmos/ibc-go
-[submodule "secret-network"]
-	path = secret-network
-	url = https://github.com/scrtlabs/SecretNetwork.git
